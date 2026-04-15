@@ -15,6 +15,9 @@
 <header class="topbar">
   <div class="topbar-inner">
     <div class="brand">
+      <button class="toc-toggle" id="tocToggle" aria-label="Toggle contents" title="Toggle contents">
+        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+      </button>
       <span class="brand-logo" id="brandLogo">GMP</span>
       <span class="brand-title" id="brandTitle">Ideogram.AI — Strategy</span>
     </div>
@@ -22,9 +25,15 @@
   </div>
 </header>
 
-<main class="container">
-  <div id="app" class="loading">Loading strategy…</div>
-</main>
+<div class="layout">
+  <aside class="toc-sidebar" id="tocSidebar" aria-label="Contents">
+    <div class="toc-label">Contents</div>
+    <nav class="toc-nav" id="tocNav"></nav>
+  </aside>
+  <main class="container">
+    <div id="app" class="loading">Loading strategy…</div>
+  </main>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
 <script src="./app.js"></script>

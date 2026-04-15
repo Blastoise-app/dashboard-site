@@ -38,6 +38,9 @@
   const updatedEl = document.getElementById('updated');
   const brandLogo = document.getElementById('brandLogo');
   const brandTitle = document.getElementById('brandTitle');
+  const tocNav = document.getElementById('tocNav');
+  const tocToggle = document.getElementById('tocToggle');
+  const tocEntries = [];
 
   let data;
   try {
@@ -75,13 +78,19 @@
   const byTitle = (re) => sections.find((s) => re.test(s.title));
 
   let sectionCounter = 0;
-  const nextNum = () => String(++sectionCounter).padStart(2, '0');
+  function addSection(title) {
+    const num = String(++sectionCounter).padStart(2, '0');
+    const id = `sec-${num}`;
+    const sec = el('section', { className: 'section', attrs: { id } });
+    sec.appendChild(buildSectionHead(num, title));
+    tocEntries.push({ id, num, title });
+    return sec;
+  }
 
   // THE OPPORTUNITY
   const opportunity = byTitle(/THE OPPORTUNITY/i);
   if (opportunity) {
-    const sec = el('section', { className: 'section' });
-    sec.appendChild(buildSectionHead(nextNum(), 'The Opportunity'));
+    const sec = addSection('The Opportunity');
     sec.appendChild(el('p', { className: 'prose-body', text: opportunity.body }));
     app.appendChild(sec);
   }
@@ -89,8 +98,7 @@
   // OUR APPROACH
   const approach = sections.find((s) => s.kind === 'approach');
   if (approach) {
-    const sec = el('section', { className: 'section' });
-    sec.appendChild(buildSectionHead(nextNum(), 'Our Approach'));
+    const sec = addSection('Our Approach');
     if (approach.intro) sec.appendChild(el('p', { className: 'section-intro', text: approach.intro }));
     sec.appendChild(renderApproachGrid(approach));
     app.appendChild(sec);
@@ -98,8 +106,7 @@
 
   // Visualization 1: Keyword universe scatter
   if (data.clusters?.groups?.length) {
-    const sec = el('section', { className: 'section' });
-    sec.appendChild(buildSectionHead(nextNum(), 'Keyword Universe'));
+    const sec = addSection('Keyword Universe');
     sec.appendChild(el('p', {
       className: 'section-intro',
       text: 'Every buyer keyword across the image, logo, and creative clusters — plotted by difficulty vs. search volume. Bigger, lower-left means easier to rank with larger payoff.'
@@ -115,8 +122,7 @@
 
   // Clusters tables
   if (data.clusters?.groups?.length) {
-    const sec = el('section', { className: 'section' });
-    sec.appendChild(buildSectionHead(nextNum(), 'Keyword Clusters'));
+    const sec = addSection('Keyword Clusters');
     sec.appendChild(el('p', {
       className: 'section-intro',
       text: 'Full keyword universe grouped into three clusters, sorted by search volume. KD pills flag keywords by how hard they are to rank.'
@@ -128,16 +134,14 @@
   // STRATEGIC ALLOCATION
   const strategic = byTitle(/STRATEGIC ALLOCATION/i);
   if (strategic) {
-    const sec = el('section', { className: 'section' });
-    sec.appendChild(buildSectionHead(nextNum(), 'Strategic Allocation'));
+    const sec = addSection('Strategic Allocation');
     sec.appendChild(el('p', { className: 'prose-body', text: strategic.body }));
     app.appendChild(sec);
   }
 
   // Visualization 2: Keyword tracker
   if (data.geoTracker?.keywords?.length) {
-    const sec = el('section', { className: 'section' });
-    sec.appendChild(buildSectionHead(nextNum(), 'Keyword Tracker'));
+    const sec = addSection('Keyword Tracker');
     sec.appendChild(el('p', {
       className: 'section-intro',
       text: 'Top 10 priority keywords × 9 grouped SEO and GEO levers. Every cell shows whether we plan to activate that surface for that keyword — the at-a-glance picture of where Ideogram will show up.'
@@ -149,8 +153,7 @@
   // HOW THE CREDIT SYSTEM
   const credits = byKind('creditSystem');
   if (credits) {
-    const sec = el('section', { className: 'section' });
-    sec.appendChild(buildSectionHead(nextNum(), 'The Credit System'));
+    const sec = addSection('The Credit System');
     if (credits.intro) sec.appendChild(el('p', { className: 'section-intro', text: credits.intro }));
     sec.appendChild(renderCredits(credits));
     app.appendChild(sec);
@@ -158,8 +161,7 @@
 
   // Visualization 3: 3-Month Roadmap (vertical timeline)
   if (data.roadmap?.months?.length) {
-    const sec = el('section', { className: 'section' });
-    sec.appendChild(buildSectionHead(nextNum(), 'Monthly Roadmap'));
+    const sec = addSection('Monthly Roadmap');
     sec.appendChild(el('p', {
       className: 'section-intro',
       text: 'Every deliverable across the three-month engagement, grouped by type. Each milestone shows the count, credit cost, and which keywords it covers.'
@@ -171,14 +173,18 @@
   // HOW TO NAVIGATE
   const nav = byKind('navigation');
   if (nav && nav.items.length) {
-    const sec = el('section', { className: 'section' });
-    sec.appendChild(buildSectionHead(nextNum(), 'How to Navigate'));
+    const sec = addSection('How to Navigate');
     sec.appendChild(renderNav(nav));
     app.appendChild(sec);
   }
 
   // Footer
   app.appendChild(renderFooter(data.overview?.footer || ''));
+
+  // Build TOC + wire up toggle + scroll highlight
+  buildToc();
+  setupTocToggle();
+  setupTocScrollSpy();
 
   // Dark mode re-init
   const mql = window.matchMedia('(prefers-color-scheme: dark)');
@@ -210,6 +216,57 @@
     head.appendChild(el('span', { className: 'section-number', text: num }));
     head.appendChild(el('h2', { className: 'section-title', text: title }));
     return head;
+  }
+
+  function buildToc() {
+    if (!tocNav) return;
+    tocNav.textContent = '';
+    tocEntries.forEach((entry) => {
+      const a = document.createElement('a');
+      a.href = `#${entry.id}`;
+      a.dataset.id = entry.id;
+      a.innerHTML = `<span class="toc-num">${entry.num}</span><span class="toc-text">${escapeHtml(entry.title)}</span>`;
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.getElementById(entry.id);
+        if (target) {
+          const top = target.getBoundingClientRect().top + window.scrollY - 76;
+          window.scrollTo({ top, behavior: 'smooth' });
+          history.replaceState(null, '', `#${entry.id}`);
+        }
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  function setupTocToggle() {
+    if (!tocToggle) return;
+    const stored = localStorage.getItem('tocHidden');
+    if (stored === '1') document.body.classList.add('toc-hidden');
+    tocToggle.addEventListener('click', () => {
+      const hidden = document.body.classList.toggle('toc-hidden');
+      localStorage.setItem('tocHidden', hidden ? '1' : '0');
+    });
+  }
+
+  function setupTocScrollSpy() {
+    if (!tocNav || !('IntersectionObserver' in window)) return;
+    const linkById = new Map();
+    tocNav.querySelectorAll('a').forEach((a) => linkById.set(a.dataset.id, a));
+    const active = new Set();
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) active.add(entry.target.id);
+        else active.delete(entry.target.id);
+      });
+      // Pick the first visible section in document order.
+      const first = tocEntries.find((e) => active.has(e.id));
+      linkById.forEach((link, id) => link.classList.toggle('active', first && id === first.id));
+    }, { rootMargin: '-30% 0px -55% 0px', threshold: 0 });
+    tocEntries.forEach((entry) => {
+      const node = document.getElementById(entry.id);
+      if (node) observer.observe(node);
+    });
   }
 
   function initials(s) {
