@@ -1,4 +1,22 @@
 (async function () {
+  const CLUSTER_COLORS = ['--red', '--type-blue', '--type-purple'];
+  const LEVER_SHORT = {
+    'Product Page': 'Product Page',
+    'Onsite Listicle': 'Listicle',
+    'Backlink': 'Backlink',
+    'Reddit Thread on SERP': 'Reddit SERP',
+    'Brand Endorsing Comment': 'Reddit Comments',
+    'Link + Subreddit': 'Reddit Link',
+    'Guest Post Listicle': 'Guest Post',
+    'Guest Post Listicle 2': 'Guest Post 2',
+    'Listicle Inclusion': 'Listicle Inclusion',
+    'Reddit Thread (LLM)': 'Reddit LLM',
+    'Brand Endorsing Comment (LLM)': 'Comments LLM',
+    'Link + Subreddit (LLM)': 'Link LLM',
+    'LinkedIn Pulse Article': 'LinkedIn',
+    'Schema Markup': 'Schema'
+  };
+
   const app = document.getElementById('app');
   const updatedEl = document.getElementById('updated');
   const brandLogo = document.getElementById('brandLogo');
@@ -259,8 +277,6 @@
 
   /* ------------- Clusters (tables + chart) ------------- */
 
-  const CLUSTER_COLORS = ['--red', '--type-blue', '--type-purple'];
-
   function buildChartLegend(clusters) {
     const legend = el('div', { className: 'chart-legend' });
     clusters.groups.forEach((g, idx) => {
@@ -408,23 +424,6 @@
   }
 
   /* ------------- GEO Tracker matrix ------------- */
-
-  const LEVER_SHORT = {
-    'Product Page': 'Product Page',
-    'Onsite Listicle': 'Listicle',
-    'Backlink': 'Backlink',
-    'Reddit Thread on SERP': 'Reddit SERP',
-    'Brand Endorsing Comment': 'Reddit Comments',
-    'Link + Subreddit': 'Reddit Link',
-    'Guest Post Listicle': 'Guest Post',
-    'Guest Post Listicle 2': 'Guest Post 2',
-    'Listicle Inclusion': 'Listicle Inclusion',
-    'Reddit Thread (LLM)': 'Reddit LLM',
-    'Brand Endorsing Comment (LLM)': 'Comments LLM',
-    'Link + Subreddit (LLM)': 'Link LLM',
-    'LinkedIn Pulse Article': 'LinkedIn',
-    'Schema Markup': 'Schema'
-  };
 
   function renderMatrix(geo) {
     const wrap = el('div', { className: 'matrix-wrap' });
