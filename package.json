@@ -1,0 +1,16 @@
+{
+  "name": "dashboard-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "fetch": "node scripts/fetch-sheet.mjs",
+    "serve": "python3 -m http.server -d docs 8000"
+  },
+  "dependencies": {
+    "papaparse": "^5.4.1"
+  }
+}
