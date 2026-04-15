@@ -609,28 +609,59 @@
   function renderMilestone(group) {
     const ms = el('div', { className: 'ms' });
     const dotVar = TYPE_DOT_COLOR[group.type] || '--type-slate';
+    const color = cssVar(dotVar);
+
     const dot = el('span', { className: 'ms-dot' });
-    dot.style.background = cssVar(dotVar);
-    dot.style.borderColor = cssVar(dotVar);
+    dot.style.background = color;
+    dot.style.borderColor = color;
     ms.appendChild(dot);
 
-    const header = el('div', { className: 'ms-header' });
-    header.appendChild(el('span', { className: 'ms-count', text: `${group.items.length}×` }));
-    header.appendChild(el('span', { className: 'ms-title', text: pluralizeType(group.type, group.items.length) }));
-    header.appendChild(el('span', { className: 'ms-credits', text: `${group.totalCredits} cr` }));
-    ms.appendChild(header);
+    const count = group.items.length;
+    const noun = count === 1 ? 'deliverable' : 'deliverables';
 
+    // Meta line — count + colored credit badge
+    const meta = el('div', { className: 'ms-meta' });
+    meta.appendChild(el('span', { className: 'ms-meta-count', text: `${count} ${noun}` }));
+    const badge = el('span', { className: 'ms-badge', text: `${group.totalCredits} credits` });
+    badge.style.color = color;
+    badge.style.background = hexWithAlpha(color, 0.14);
+    badge.style.borderColor = hexWithAlpha(color, 0.35);
+    meta.appendChild(badge);
+    ms.appendChild(meta);
+
+    // Title
+    ms.appendChild(el('div', {
+      className: 'ms-title',
+      text: pluralizeType(group.type, count)
+    }));
+
+    // Body — use the description from any deliverable in the group
+    const desc = group.items.find((d) => d.description)?.description;
+    if (desc) ms.appendChild(el('div', { className: 'ms-body', text: desc }));
+
+    // Keywords closer
     const keywords = group.items
       .map((d) => d.keyword)
       .filter((k, i, a) => k && a.indexOf(k) === i);
     if (keywords.length) {
-      const body = el('div', { className: 'ms-body' });
-      body.appendChild(document.createTextNode(keywords.join(' · ')));
-      ms.appendChild(body);
-    } else if (group.description) {
-      ms.appendChild(el('div', { className: 'ms-body', text: group.description }));
+      const deliver = el('div', { className: 'ms-deliver' });
+      deliver.appendChild(el('span', { className: 'ms-deliver-label', text: 'Keywords: ' }));
+      deliver.appendChild(document.createTextNode(keywords.join(' · ')));
+      ms.appendChild(deliver);
     }
+
     return ms;
+  }
+
+  function hexWithAlpha(hex, alpha) {
+    // Convert #rrggbb → rgba(r,g,b,alpha). Falls back to the input if not a hex string.
+    const m = /^#?([0-9a-f]{6})$/i.exec((hex || '').trim());
+    if (!m) return hex;
+    const n = parseInt(m[1], 16);
+    const r = (n >> 16) & 255;
+    const g = (n >> 8) & 255;
+    const b = n & 255;
+    return `rgba(${r},${g},${b},${alpha})`;
   }
 
   function pluralizeType(type, count) {
