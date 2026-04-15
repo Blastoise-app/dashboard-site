@@ -17,8 +17,8 @@
   document.title = data.title;
   brandTitle.textContent = data.title;
   if (data.brand?.name) {
-    brandLogo.textContent = initials(data.brand.name);
-    if (data.brand.chipBg) brandLogo.style.background = data.brand.chipBg;
+    const boltSvg = '<svg viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg"><path d="M14 0 L2 18 H11 L9 32 L22 12 H13 Z"/></svg>';
+    brandLogo.innerHTML = boltSvg + initials(data.brand.name);
   }
   renderUpdated(data.lastUpdated);
 
@@ -26,8 +26,13 @@
   app.textContent = '';
 
   // Hero
-  app.appendChild(el('h1', { text: data.title }));
-  app.appendChild(el('p', { className: 'subtitle', text: data.subtitle }));
+  const hero = el('div', { className: 'hero' });
+  hero.appendChild(buildHeroBolts());
+  const heroContent = el('div', { className: 'hero-content' });
+  heroContent.appendChild(renderHeroHeadline(data.title));
+  heroContent.appendChild(el('p', { className: 'subtitle', text: data.subtitle }));
+  hero.appendChild(heroContent);
+  app.appendChild(hero);
 
   const sections = data.overview?.sections || [];
   const byKind = (kind) => sections.find((s) => s.kind === kind);
@@ -150,6 +155,46 @@
     return s.split(/\s+/).filter(Boolean).slice(0, 3).map((w) => w[0]).join('').toUpperCase();
   }
 
+  function buildHeroBolts() {
+    const wrap = el('div', { className: 'hero-bolts' });
+    const positions = [
+      { x: '14%', y: '12%', size: 22, rot: 12 },
+      { x: '38%', y: '6%',  size: 18, rot: -18 },
+      { x: '62%', y: '18%', size: 26, rot: 8 },
+      { x: '82%', y: '8%',  size: 20, rot: -10 },
+      { x: '92%', y: '44%', size: 16, rot: 20 },
+      { x: '72%', y: '70%', size: 24, rot: -12 },
+      { x: '48%', y: '82%', size: 18, rot: 14 },
+      { x: '22%', y: '66%', size: 20, rot: -16 },
+      { x: '4%',  y: '46%', size: 22, rot: 10 }
+    ];
+    positions.forEach((p) => {
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 24 32');
+      svg.style.left = p.x;
+      svg.style.top = p.y;
+      svg.style.width = p.size + 'px';
+      svg.style.height = (p.size * 1.3) + 'px';
+      svg.style.transform = `rotate(${p.rot}deg)`;
+      svg.innerHTML = '<path d="M14 0 L2 18 H11 L9 32 L22 12 H13 Z"/>';
+      wrap.appendChild(svg);
+    });
+    return wrap;
+  }
+
+  function renderHeroHeadline(title) {
+    // Split at the em-dash so the first half becomes a red accent.
+    const h1 = el('h1');
+    const parts = title.split(/\s+—\s+/);
+    if (parts.length >= 2) {
+      h1.appendChild(el('span', { className: 'accent', text: parts[0] + ' — ' }));
+      h1.appendChild(document.createTextNode(parts.slice(1).join(' — ')));
+    } else {
+      h1.textContent = title;
+    }
+    return h1;
+  }
+
   function cssVar(name) {
     return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   }
@@ -214,7 +259,7 @@
 
   /* ------------- Clusters (tables + chart) ------------- */
 
-  const CLUSTER_COLORS = ['--blue-text', '--purple-text', '--green-text'];
+  const CLUSTER_COLORS = ['--red', '--type-blue', '--type-purple'];
 
   function buildChartLegend(clusters) {
     const legend = el('div', { className: 'chart-legend' });
@@ -234,9 +279,9 @@
 
   function initClustersChart(container, clusters) {
     const colors = CLUSTER_COLORS.map((v) => cssVar(v));
-    const borderColor = cssVar('--border');
+    const borderColor = 'rgba(255,255,255,0.1)';
     const tickColor = cssVar('--text-tertiary');
-    const bgPrimary = cssVar('--bg-primary');
+    const bgTooltip = cssVar('--bg-card');
 
     const series = clusters.groups.map((g, idx) => ({
       name: g.name,
@@ -295,15 +340,15 @@
       },
       tooltip: {
         trigger: 'item',
-        backgroundColor: bgPrimary,
+        backgroundColor: bgTooltip,
         borderColor: borderColor,
         borderWidth: 0.5,
         textStyle: { color: cssVar('--text-primary'), fontFamily: 'DM Sans', fontSize: 13 },
-        extraCssText: 'border-radius:10px;box-shadow:none;',
+        extraCssText: 'border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.4);',
         formatter: (p) => {
           const d = p.data.display;
           return `
-            <div style="font-weight:600;margin-bottom:4px">${escapeHtml(p.data.name)}</div>
+            <div style="font-weight:600;margin-bottom:4px;color:#fff">${escapeHtml(p.data.name)}</div>
             <div style="color:${cssVar('--text-secondary')};font-family:DM Mono;font-size:11.5px">
               SV ${d.svDisplay} · KD ${d.kd} · CPC ${d.cpcDisplay || '—'}
             </div>`;
@@ -364,6 +409,23 @@
 
   /* ------------- GEO Tracker matrix ------------- */
 
+  const LEVER_SHORT = {
+    'Product Page': 'Product Page',
+    'Onsite Listicle': 'Listicle',
+    'Backlink': 'Backlink',
+    'Reddit Thread on SERP': 'Reddit SERP',
+    'Brand Endorsing Comment': 'Reddit Comments',
+    'Link + Subreddit': 'Reddit Link',
+    'Guest Post Listicle': 'Guest Post',
+    'Guest Post Listicle 2': 'Guest Post 2',
+    'Listicle Inclusion': 'Listicle Inclusion',
+    'Reddit Thread (LLM)': 'Reddit LLM',
+    'Brand Endorsing Comment (LLM)': 'Comments LLM',
+    'Link + Subreddit (LLM)': 'Link LLM',
+    'LinkedIn Pulse Article': 'LinkedIn',
+    'Schema Markup': 'Schema'
+  };
+
   function renderMatrix(geo) {
     const wrap = el('div', { className: 'matrix-wrap' });
     const scroll = el('div', { className: 'matrix-scroll' });
@@ -372,11 +434,16 @@
     // Header
     const thead = el('thead');
     const trh = el('tr');
-    trh.appendChild(el('th', { className: 'kw-col', text: 'Keyword' }));
+    trh.appendChild(el('th', { className: 'kw-col', text: 'Keyword / Prompt' }));
+    trh.appendChild(el('th', { className: 'sv-col', text: 'SV' }));
     const seoLastIdx = geo.levers.findLastIndex((l) => l.group === 'SEO');
     geo.levers.forEach((lever, idx) => {
-      const th = el('th', { className: 'lever' + (idx === seoLastIdx ? ' seo-last' : '') });
-      th.appendChild(el('span', { className: 'lever-header', text: lever.label }));
+      const short = LEVER_SHORT[lever.label] || lever.label;
+      const th = el('th', {
+        className: 'lever' + (idx === seoLastIdx ? ' seo-last' : ''),
+        text: short,
+        attrs: { title: lever.label }
+      });
       trh.appendChild(th);
     });
     thead.appendChild(trh);
@@ -388,12 +455,15 @@
       const tr = el('tr');
       const kwCell = el('td', { className: 'kw-col' });
       kwCell.appendChild(el('span', { className: 'kw-name', text: kw.keyword }));
-      kwCell.appendChild(el('span', { className: 'kw-sv', text: `SV ${kw.svDisplay || '—'}` }));
       tr.appendChild(kwCell);
+      tr.appendChild(el('td', { className: 'sv-col', text: kw.svDisplay || '—' }));
       geo.levers.forEach((lever, idx) => {
         const status = kw.coverage[lever.id] || 'notDone';
         const td = el('td', { className: idx === seoLastIdx ? 'seo-last' : '' });
-        td.appendChild(el('span', { className: `cell-chip ${status}`, attrs: { title: `${lever.label} — ${statusLabel(status)}` } }));
+        td.appendChild(el('span', {
+          className: `dot ${status}`,
+          attrs: { title: `${lever.label} — ${statusLabel(status)}` }
+        }));
         tr.appendChild(td);
       });
       tbody.appendChild(tr);
@@ -405,27 +475,34 @@
     // Legend
     const legend = el('div', { className: 'matrix-legend' });
     [
-      ['proposed',   'Proposed'],
+      ['done',       'Live'],
       ['inProgress', 'In Progress'],
-      ['done',       'Done'],
-      ['notDone',    'Not in scope']
+      ['proposed',   'Planned'],
+      ['notDone',    'Not Done']
     ].forEach(([k, label]) => {
       legend.appendChild(
         el('span', {
+          className: 'leg',
           children: [
-            el('span', { className: `cell-chip ${k}` }),
+            el('span', { className: `dot ${k}` }),
             document.createTextNode(label)
           ]
         })
       );
     });
+    legend.appendChild(
+      el('span', {
+        className: 'note',
+        text: 'For each keyword we track every lever until your bases are covered across search + AI.'
+      })
+    );
     wrap.appendChild(legend);
 
     return wrap;
   }
 
   function statusLabel(s) {
-    return { proposed: 'Proposed', inProgress: 'In Progress', done: 'Done', notDone: 'Not in scope' }[s] || s;
+    return { proposed: 'Planned', inProgress: 'In Progress', done: 'Live', notDone: 'Not Done' }[s] || s;
   }
 
   /* ------------- Credits table ------------- */
@@ -472,32 +549,58 @@
 
   function renderRoadmap(roadmap) {
     const wrap = el('div', { className: 'roadmap' });
-    roadmap.months.forEach((month) => {
+    roadmap.months.forEach((month, idx) => {
       const col = el('div', { className: 'month-col' });
-      const head = el('div', { className: 'month-head' });
-      head.appendChild(el('h3', { text: month.label }));
-      head.appendChild(el('span', { className: 'month-total', text: `${month.totalCredits} credits` }));
-      col.appendChild(head);
-      const body = el('div', { className: 'month-body' });
-      month.deliverables.forEach((d) => body.appendChild(renderDeliverable(d)));
-      col.appendChild(body);
+      const card = el('div', { className: 'month-card' });
+      const head = el('div', { className: 'month-head', text: `Month ${idx + 1}` });
+      card.appendChild(head);
+      const rows = el('div', { className: 'month-rows' });
+      month.deliverables.forEach((d) => rows.appendChild(renderDeliverableRow(d)));
+      card.appendChild(rows);
+      col.appendChild(card);
+      col.appendChild(el('div', { className: 'month-total', text: `${month.totalCredits} credits` }));
       wrap.appendChild(col);
     });
     return wrap;
   }
 
-  function renderDeliverable(d) {
-    const card = el('div', { className: 'deliverable' });
-    const head = el('div', { className: 'deliverable-head' });
-    head.appendChild(el('span', { className: 'type-chip', text: d.type }));
-    head.appendChild(el('span', { className: 'credit-badge', text: `${d.credits} cr` }));
-    card.appendChild(head);
-    card.appendChild(el('h4', { text: d.title }));
-    if (d.keyword) card.appendChild(el('span', { className: 'kw-chip', text: d.keyword }));
-    if (d.rationale) card.appendChild(el('div', { className: 'rationale', text: d.rationale }));
-    if (d.description) card.appendChild(el('div', { className: 'description', text: d.description }));
-    card.addEventListener('click', () => card.classList.toggle('open'));
-    return card;
+  function renderDeliverableRow(d) {
+    const row = el('div', { className: 'deliv-row' });
+    const typeClass = typeToClass(d.type);
+    row.appendChild(el('span', { className: `type-chip ${typeClass}`, text: shortenType(d.type) }));
+    const titleText = d.keyword
+      ? `${arrowIf(d)}${d.keyword}`
+      : (d.title || d.type);
+    row.appendChild(el('span', { className: 'deliv-title', text: titleText, attrs: { title: d.title || d.keyword } }));
+    row.appendChild(el('span', { className: 'credit-num', text: String(d.credits) }));
+
+    const extra = el('div', { className: 'extra' });
+    if (d.title) extra.appendChild(el('div', { html: `<strong>${escapeHtml(d.title)}</strong>` }));
+    if (d.rationale) extra.appendChild(el('div', { text: d.rationale, attrs: { style: 'margin-top:4px' } }));
+    if (d.description) extra.appendChild(el('div', { text: d.description, attrs: { style: 'margin-top:4px;color:var(--text-tertiary)' } }));
+    row.appendChild(extra);
+
+    row.addEventListener('click', () => row.classList.toggle('open'));
+    return row;
+  }
+
+  function arrowIf(d) {
+    // When the title is a "refresh" / "outreach" type, prefix with arrow to indicate action on existing.
+    if (/refresh|outreach|optim/i.test(d.type)) return '→ ';
+    return '';
+  }
+
+  function typeToClass(type) {
+    const clean = (type || '').replace(/\([^)]*\)/g, '').replace(/[^A-Za-z]/g, '').trim();
+    return clean ? `type-${clean}` : 'type-default';
+  }
+
+  function shortenType(type) {
+    if (!type) return '';
+    return type
+      .replace(/\s*\(.*?\)\s*/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
 
   /* ------------- Nav ------------- */

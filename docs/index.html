@@ -3,84 +3,88 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Site</title>
+<title>GMP — Client Strategy Microsites</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f7f7f5;
-  --bg-tertiary: #f0efec;
-  --text-primary: #1a1a1a;
-  --text-secondary: #6b6b6b;
-  --text-tertiary: #9a9a9a;
-  --border: rgba(0, 0, 0, 0.1);
-  --border-hover: rgba(0, 0, 0, 0.2);
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-primary: #1a1a1a;
-    --bg-secondary: #242422;
-    --bg-tertiary: #2c2c2a;
-    --text-primary: #e8e8e4;
-    --text-secondary: #9a9a96;
-    --text-tertiary: #6b6b68;
-    --border: rgba(255, 255, 255, 0.08);
-    --border-hover: rgba(255, 255, 255, 0.15);
-  }
+  --bg-page: #122032;
+  --bg-card: #1a2c42;
+  --bg-card-2: #223654;
+  --bg-inset: #0d1826;
+  --text-primary: #ffffff;
+  --text-secondary: #a8b6c8;
+  --text-tertiary: #6a7b92;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.18);
+  --red: #f40102;
+  --red-hover: #ff3133;
+  --red-border: rgba(244, 1, 2, 0.35);
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: var(--bg-page); }
 body {
   font-family: 'DM Sans', -apple-system, system-ui, sans-serif;
-  background: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
 }
 .container {
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
   padding: 96px 24px 80px;
+  position: relative;
 }
-.kicker {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--text-tertiary);
-  margin-bottom: 16px;
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-inset);
+  color: #fff;
+  padding: 8px 13px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  border: 0.5px solid var(--border);
+  margin-bottom: 32px;
 }
+.brand-logo svg { width: 13px; height: 15px; fill: var(--red); }
 h1 {
-  font-size: 38px;
-  font-weight: 600;
-  letter-spacing: -0.5px;
-  margin-bottom: 12px;
+  font-size: 46px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1.08;
+  margin-bottom: 16px;
+  max-width: 680px;
 }
+h1 .accent { color: var(--red); }
 .sub {
   font-size: 17px;
   color: var(--text-secondary);
-  margin-bottom: 48px;
-  max-width: 560px;
+  margin-bottom: 56px;
+  max-width: 620px;
 }
-.clients { display: grid; gap: 10px; }
+.clients { display: grid; gap: 12px; }
 .client-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 20px;
+  padding: 20px 22px;
   border: 0.5px solid var(--border);
   border-radius: 14px;
-  background: var(--bg-primary);
+  background: var(--bg-card);
   text-decoration: none;
   color: var(--text-primary);
   transition: border-color 0.15s ease, background 0.15s ease;
 }
-.client-card:hover { border-color: var(--border-hover); background: var(--bg-secondary); }
+.client-card:hover { border-color: var(--red-border); background: var(--bg-card-2); }
 .client-card h2 {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
   letter-spacing: -0.1px;
 }
 .client-card p {
@@ -89,20 +93,24 @@ h1 {
 }
 .client-card .arrow {
   font-family: 'DM Mono', monospace;
-  color: var(--text-tertiary);
-  font-size: 14px;
+  color: var(--red);
+  font-size: 18px;
+  font-weight: 700;
 }
 </style>
 </head>
 <body>
 <main class="container">
-  <span class="kicker">Dashboard Site · Growth Marketing Pro</span>
-  <h1>Client Strategy Microsites</h1>
-  <p class="sub">Live, auto-refreshing strategy microsites rendered from Google Sheets. Each link opens the latest version of a client's plan.</p>
+  <span class="brand-logo">
+    <svg viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg"><path d="M14 0 L2 18 H11 L9 32 L22 12 H13 Z"/></svg>
+    GMP
+  </span>
+  <h1><span class="accent">Growth Marketing Pro</span><br>Client Strategy Microsites</h1>
+  <p class="sub">Live, auto-refreshing strategy microsites rendered from client Google Sheets. Each link opens the latest version of a plan.</p>
   <div class="clients">
     <a class="client-card" href="./ideogram/">
       <div>
-        <h2>Ideogram.AI</h2>
+        <h2>Ideogram.AI — Search Everywhere Optimization</h2>
         <p>3-Month SEO/GEO Roadmap · April 2026</p>
       </div>
       <span class="arrow">→</span>
