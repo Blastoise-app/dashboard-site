@@ -1,5 +1,5 @@
 (async function () {
-  const CLUSTER_COLORS = ['--red', '--type-blue', '--type-purple'];
+  const CLUSTER_COLORS = ['--red', '--data-blue', '--data-purple'];
 
   const LEVER_GROUPS = [
     { id: 'productPage',       label: 'Product Page',        members: ['productPage'] },
@@ -18,20 +18,20 @@
 
   // Color dot per deliverable type — drives the timeline milestone dots.
   const TYPE_DOT_COLOR = {
-    'Onsite Product Page':      '--type-green',
-    'Onsite Blog Listicle':     '--type-blue',
-    'Guest Post Listicle':      '--type-red',
-    'Listicle Inclusion':       '--type-slate',
-    'Reddit SEO Post':          '--type-orange',
-    'Reddit VIRAL GROWTH Post': '--type-orange',
-    'Reddit Comments':          '--type-orange',
-    'Backlink':                 '--type-olive',
-    'Backlink (Premium)':       '--type-olive',
-    'YouTube Video':            '--type-purple',
-    'YouTube Optimization':     '--type-purple',
-    'Wikipedia':                '--type-slate',
-    'Page Refresh':             '--type-teal',
-    'LinkedIn Article':         '--type-indigo'
+    'Onsite Product Page':      '--data-green',
+    'Onsite Blog Listicle':     '--data-blue',
+    'Guest Post Listicle':      '--red',
+    'Listicle Inclusion':       '--data-slate',
+    'Reddit SEO Post':          '--data-orange',
+    'Reddit VIRAL GROWTH Post': '--data-orange',
+    'Reddit Comments':          '--data-orange',
+    'Backlink':                 '--data-amber',
+    'Backlink (Premium)':       '--data-amber',
+    'YouTube Video':            '--data-purple',
+    'YouTube Optimization':     '--data-purple',
+    'Wikipedia':                '--data-slate',
+    'Page Refresh':             '--data-teal',
+    'LinkedIn Article':         '--data-indigo'
   };
 
   const app = document.getElementById('app');
@@ -64,6 +64,7 @@
   const hero = el('div', { className: 'hero' });
   hero.appendChild(buildHeroBolts());
   const heroContent = el('div', { className: 'hero-content' });
+  heroContent.appendChild(el('span', { className: 'eyebrow', text: 'Strategy Brief · April 2026' }));
   heroContent.appendChild(renderHeroHeadline(data.title));
   heroContent.appendChild(el('p', { className: 'subtitle', text: data.subtitle }));
   hero.appendChild(heroContent);
@@ -73,78 +74,107 @@
   const byKind = (kind) => sections.find((s) => s.kind === kind);
   const byTitle = (re) => sections.find((s) => re.test(s.title));
 
+  let sectionCounter = 0;
+  const nextNum = () => String(++sectionCounter).padStart(2, '0');
+
   // THE OPPORTUNITY
   const opportunity = byTitle(/THE OPPORTUNITY/i);
-  if (opportunity) app.appendChild(renderProse(opportunity));
+  if (opportunity) {
+    const sec = el('section', { className: 'section' });
+    sec.appendChild(buildSectionHead(nextNum(), 'The Opportunity'));
+    sec.appendChild(el('p', { className: 'prose-body', text: opportunity.body }));
+    app.appendChild(sec);
+  }
 
   // OUR APPROACH
   const approach = sections.find((s) => s.kind === 'approach');
-  if (approach) app.appendChild(renderApproach(approach));
+  if (approach) {
+    const sec = el('section', { className: 'section' });
+    sec.appendChild(buildSectionHead(nextNum(), 'Our Approach'));
+    if (approach.intro) sec.appendChild(el('p', { className: 'section-intro', text: approach.intro }));
+    sec.appendChild(renderApproachGrid(approach));
+    app.appendChild(sec);
+  }
 
   // Visualization 1: Keyword universe scatter
   if (data.clusters?.groups?.length) {
-    app.appendChild(sectionHeading('Keyword Universe'));
-    app.appendChild(el('p', {
+    const sec = el('section', { className: 'section' });
+    sec.appendChild(buildSectionHead(nextNum(), 'Keyword Universe'));
+    sec.appendChild(el('p', {
       className: 'section-intro',
-      text: 'Every buyer keyword across the image, logo, and creative clusters — plotted by difficulty vs. search volume. Bigger, lower-left is easier to rank with bigger payoff.'
+      text: 'Every buyer keyword across the image, logo, and creative clusters — plotted by difficulty vs. search volume. Bigger, lower-left means easier to rank with larger payoff.'
     }));
     const chartWrap = el('div', { className: 'chart-wrap' });
     chartWrap.appendChild(buildChartLegend(data.clusters));
     const chartDiv = el('div', { id: 'clustersChart' });
     chartWrap.appendChild(chartDiv);
-    app.appendChild(chartWrap);
-
-    // Defer chart init until after layout
+    sec.appendChild(chartWrap);
+    app.appendChild(sec);
     requestAnimationFrame(() => initClustersChart(chartDiv, data.clusters));
   }
 
   // Clusters tables
   if (data.clusters?.groups?.length) {
-    app.appendChild(sectionHeading('Clusters'));
-    app.appendChild(el('p', {
+    const sec = el('section', { className: 'section' });
+    sec.appendChild(buildSectionHead(nextNum(), 'Keyword Clusters'));
+    sec.appendChild(el('p', {
       className: 'section-intro',
-      text: 'Full keyword universe, sortable by search volume, difficulty, and CPC. Colored KD pills flag keywords by how hard they are to rank.'
+      text: 'Full keyword universe grouped into three clusters, sorted by search volume. KD pills flag keywords by how hard they are to rank.'
     }));
-    app.appendChild(renderClusters(data.clusters));
+    sec.appendChild(renderClusters(data.clusters));
+    app.appendChild(sec);
   }
 
   // STRATEGIC ALLOCATION
   const strategic = byTitle(/STRATEGIC ALLOCATION/i);
-  if (strategic) app.appendChild(renderProse(strategic));
+  if (strategic) {
+    const sec = el('section', { className: 'section' });
+    sec.appendChild(buildSectionHead(nextNum(), 'Strategic Allocation'));
+    sec.appendChild(el('p', { className: 'prose-body', text: strategic.body }));
+    app.appendChild(sec);
+  }
 
-  // Visualization 2: GEO Tracker matrix
+  // Visualization 2: Keyword tracker
   if (data.geoTracker?.keywords?.length) {
-    app.appendChild(sectionHeading('GEO Tracker — Coverage Matrix'));
-    app.appendChild(el('p', {
+    const sec = el('section', { className: 'section' });
+    sec.appendChild(buildSectionHead(nextNum(), 'Keyword Tracker'));
+    sec.appendChild(el('p', {
       className: 'section-intro',
-      text: 'Every priority keyword × every SEO and GEO lever. Each cell shows whether we plan to activate that surface for that keyword — the at-a-glance picture of where Ideogram will show up.'
+      text: 'Top 10 priority keywords × 9 grouped SEO and GEO levers. Every cell shows whether we plan to activate that surface for that keyword — the at-a-glance picture of where Ideogram will show up.'
     }));
-    app.appendChild(renderMatrix(data.geoTracker));
+    sec.appendChild(renderMatrix(data.geoTracker));
+    app.appendChild(sec);
   }
 
   // HOW THE CREDIT SYSTEM
   const credits = byKind('creditSystem');
   if (credits) {
-    app.appendChild(sectionHeading('How The Credit System Works'));
-    if (credits.intro) app.appendChild(el('p', { className: 'section-intro', text: credits.intro }));
-    app.appendChild(renderCredits(credits));
+    const sec = el('section', { className: 'section' });
+    sec.appendChild(buildSectionHead(nextNum(), 'The Credit System'));
+    if (credits.intro) sec.appendChild(el('p', { className: 'section-intro', text: credits.intro }));
+    sec.appendChild(renderCredits(credits));
+    app.appendChild(sec);
   }
 
-  // Visualization 3: 3-Month Roadmap
+  // Visualization 3: 3-Month Roadmap (vertical timeline)
   if (data.roadmap?.months?.length) {
-    app.appendChild(sectionHeading('3-Month Roadmap'));
-    app.appendChild(el('p', {
+    const sec = el('section', { className: 'section' });
+    sec.appendChild(buildSectionHead(nextNum(), 'Monthly Roadmap'));
+    sec.appendChild(el('p', {
       className: 'section-intro',
-      text: 'Every deliverable, month by month. Tap a card to see what it is and why it matters.'
+      text: 'Every deliverable across the three-month engagement, grouped by type. Each milestone shows the count, credit cost, and which keywords it covers.'
     }));
-    app.appendChild(renderRoadmap(data.roadmap));
+    sec.appendChild(renderRoadmap(data.roadmap));
+    app.appendChild(sec);
   }
 
   // HOW TO NAVIGATE
   const nav = byKind('navigation');
   if (nav && nav.items.length) {
-    app.appendChild(sectionHeading('How to Navigate This Document'));
-    app.appendChild(renderNav(nav));
+    const sec = el('section', { className: 'section' });
+    sec.appendChild(buildSectionHead(nextNum(), 'How to Navigate'));
+    sec.appendChild(renderNav(nav));
+    app.appendChild(sec);
   }
 
   // Footer
@@ -175,8 +205,11 @@
     return node;
   }
 
-  function sectionHeading(text) {
-    return el('h2', { text });
+  function buildSectionHead(num, title) {
+    const head = el('div', { className: 'section-head' });
+    head.appendChild(el('span', { className: 'section-number', text: num }));
+    head.appendChild(el('h2', { className: 'section-title', text: title }));
+    return head;
   }
 
   function initials(s) {
@@ -211,12 +244,22 @@
   }
 
   function renderHeroHeadline(title) {
-    // Split at the em-dash so the first half becomes a red accent.
+    // Split at the em-dash: brand name gets muted, rest of the title takes the
+    // display weight with a final italic red accent word.
     const h1 = el('h1');
     const parts = title.split(/\s+—\s+/);
     if (parts.length >= 2) {
-      h1.appendChild(el('span', { className: 'accent', text: parts[0] + ' — ' }));
-      h1.appendChild(document.createTextNode(parts.slice(1).join(' — ')));
+      const brand = el('span', { className: 'brand-name', text: parts[0] });
+      h1.appendChild(brand);
+      h1.appendChild(document.createTextNode(' '));
+      const rest = parts.slice(1).join(' — ');
+      // Wrap the last word of `rest` in italic red.
+      const words = rest.split(' ');
+      const last = words.pop();
+      if (words.length) {
+        h1.appendChild(document.createTextNode(words.join(' ') + ' '));
+      }
+      h1.appendChild(el('em', { text: last }));
     } else {
       h1.textContent = title;
     }
@@ -265,24 +308,16 @@
 
   /* ------------- Approach ------------- */
 
-  function renderApproach(section) {
-    const wrap = el('div');
-    wrap.appendChild(sectionHeading('Our Approach — Search Everywhere Optimization'));
-    if (section.intro) wrap.appendChild(el('p', { className: 'section-intro', text: section.intro }));
+  function renderApproachGrid(section) {
     const grid = el('div', { className: 'approach-grid' });
-    for (const b of section.bullets) {
-      grid.appendChild(
-        el('div', {
-          className: 'approach-card',
-          children: [
-            el('h3', { text: b.title }),
-            el('p', { text: b.body })
-          ]
-        })
-      );
-    }
-    wrap.appendChild(grid);
-    return wrap;
+    section.bullets.forEach((b, idx) => {
+      const card = el('div', { className: 'approach-card' });
+      card.appendChild(el('span', { className: 'num', text: String(idx + 1).padStart(2, '0') }));
+      card.appendChild(el('h3', { text: b.title }));
+      card.appendChild(el('p', { text: b.body }));
+      grid.appendChild(card);
+    });
+    return grid;
   }
 
   /* ------------- Clusters (tables + chart) ------------- */
@@ -305,8 +340,8 @@
 
   function initClustersChart(container, clusters) {
     const colors = CLUSTER_COLORS.map((v) => cssVar(v));
-    const borderColor = 'rgba(255,255,255,0.1)';
-    const tickColor = cssVar('--text-tertiary');
+    const borderColor = 'rgba(255,255,255,0.08)';
+    const tickColor = cssVar('--ink-3');
     const bgTooltip = cssVar('--bg-card');
 
     const series = clusters.groups.map((g, idx) => ({
@@ -337,20 +372,20 @@
       xAxis: {
         name: 'Keyword Difficulty',
         nameLocation: 'middle',
-        nameGap: 28,
-        nameTextStyle: { color: tickColor, fontFamily: 'DM Sans', fontSize: 11 },
+        nameGap: 30,
+        nameTextStyle: { color: tickColor, fontFamily: 'Inter', fontSize: 11, fontWeight: 500 },
         min: 0,
         max: 100,
         axisLine: { lineStyle: { color: borderColor } },
         axisTick: { show: false },
         splitLine: { lineStyle: { color: borderColor, type: 'solid', width: 0.5 } },
-        axisLabel: { color: tickColor, fontFamily: 'DM Mono', fontSize: 11 }
+        axisLabel: { color: tickColor, fontFamily: 'JetBrains Mono', fontSize: 11 }
       },
       yAxis: {
         name: 'Search Volume',
         nameLocation: 'middle',
-        nameGap: 44,
-        nameTextStyle: { color: tickColor, fontFamily: 'DM Sans', fontSize: 11 },
+        nameGap: 48,
+        nameTextStyle: { color: tickColor, fontFamily: 'Inter', fontSize: 11, fontWeight: 500 },
         type: 'log',
         logBase: 10,
         min: 10,
@@ -359,7 +394,7 @@
         splitLine: { lineStyle: { color: borderColor, type: 'solid', width: 0.5 } },
         axisLabel: {
           color: tickColor,
-          fontFamily: 'DM Mono',
+          fontFamily: 'JetBrains Mono',
           fontSize: 11,
           formatter: formatSv
         }
@@ -367,15 +402,15 @@
       tooltip: {
         trigger: 'item',
         backgroundColor: bgTooltip,
-        borderColor: borderColor,
+        borderColor: 'rgba(255,255,255,0.12)',
         borderWidth: 0.5,
-        textStyle: { color: cssVar('--text-primary'), fontFamily: 'DM Sans', fontSize: 13 },
-        extraCssText: 'border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.4);',
+        textStyle: { color: cssVar('--ink-0'), fontFamily: 'Inter', fontSize: 13 },
+        extraCssText: 'border-radius:10px;box-shadow:0 12px 40px rgba(0,0,0,0.5);padding:10px 14px;',
         formatter: (p) => {
           const d = p.data.display;
           return `
-            <div style="font-weight:600;margin-bottom:4px;color:#fff">${escapeHtml(p.data.name)}</div>
-            <div style="color:${cssVar('--text-secondary')};font-family:DM Mono;font-size:11.5px">
+            <div style="font-weight:600;margin-bottom:5px;color:#fff;font-family:Inter">${escapeHtml(p.data.name)}</div>
+            <div style="color:${cssVar('--ink-2')};font-family:'JetBrains Mono';font-size:11.5px">
               SV ${d.svDisplay} · KD ${d.kd} · CPC ${d.cpcDisplay || '—'}
             </div>`;
         }
