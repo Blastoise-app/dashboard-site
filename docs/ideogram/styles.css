@@ -484,117 +484,101 @@ h2 {
 }
 .credits-table td.what { color: var(--text-secondary); }
 
-/* -------- Roadmap (monthly cards) -------- */
-.roadmap {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+/* -------- Roadmap (vertical phase timeline) -------- */
+.timeline {
+  max-width: 780px;
+  margin-top: 8px;
 }
-@media (max-width: 940px) { .roadmap { grid-template-columns: 1fr; } }
-.month-col {
-  display: flex;
-  flex-direction: column;
-}
-.month-card {
-  border: 0.5px solid var(--red-border);
-  border-radius: var(--radius-lg);
-  background: var(--bg-card);
-  overflow: hidden;
-  padding: 10px;
-}
-.month-head {
-  background: var(--red);
-  color: #fff;
-  text-align: center;
-  padding: 14px 16px;
-  border-radius: 10px;
-  font-size: 18px;
+.phase-label {
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.2px;
-  margin-bottom: 10px;
-}
-.month-rows { display: flex; flex-direction: column; gap: 6px; }
-.deliv-row {
-  display: grid;
-  grid-template-columns: minmax(0, 140px) minmax(0, 1fr) 30px;
-  align-items: center;
-  gap: 10px;
-  padding: 7px 6px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.12s ease;
-}
-.deliv-row:hover { background: var(--bg-card-2); }
-.type-chip {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10.5px;
-  font-weight: 700;
+  color: var(--text-secondary);
   text-transform: uppercase;
-  letter-spacing: 0.2px;
-  color: #fff;
-  padding: 7px 10px;
-  border-radius: 7px;
-  text-align: center;
-  line-height: 1.15;
-  white-space: normal;
-  min-height: 32px;
-  overflow: hidden;
+  letter-spacing: 0.6px;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  border-bottom: 0.5px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
 }
-.deliv-title {
-  font-size: 12.5px;
-  color: var(--text-primary);
-  line-height: 1.35;
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.deliv-title .arrow { color: var(--text-tertiary); margin-right: 4px; }
-.credit-num {
+.phase-label > span:first-child { color: #fff; }
+.phase-cost {
   font-family: var(--mono);
   font-size: 13px;
-  font-weight: 700;
-  color: #fff;
-  text-align: right;
+  color: var(--red);
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
 }
-.deliv-row .extra {
-  display: none;
-  grid-column: 1 / -1;
-  font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  margin-top: 6px;
-  padding-top: 8px;
-  border-top: 0.5px dashed var(--border);
+.phase-gap { margin-top: 40px; }
+
+.phase { padding-left: 2px; }
+
+.ms {
+  position: relative;
+  padding: 0 0 0 30px;
+  margin-bottom: 22px;
 }
-.deliv-row.open .extra { display: block; }
-.month-total {
-  text-align: center;
-  margin-top: 14px;
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--text-tertiary);
-  letter-spacing: 0.3px;
+.ms:last-child { margin-bottom: 0; }
+.ms::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 22px;
+  bottom: -22px;
+  width: 1px;
+  background: var(--border);
+}
+.ms:last-child::before { display: none; }
+
+.ms-dot {
+  position: absolute;
+  left: 0;
+  top: 5px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--text-tertiary);
+  background: var(--text-tertiary);
+  box-shadow: 0 0 0 3px var(--bg-page);
 }
 
-/* Type chip colors */
-.type-GuestPostListicle  { background: var(--type-red); }
-.type-OnsiteBlogListicle { background: var(--type-blue); }
-.type-OnsiteProductPage  { background: var(--type-green); }
-.type-RedditSEOPost      { background: var(--type-orange); }
-.type-RedditVIRALGROWTHPost { background: var(--type-orange); }
-.type-RedditComments     { background: var(--type-orange); }
-.type-Backlink           { background: var(--type-olive); }
-.type-BacklinkPremium    { background: #6d4c0f; }
-.type-ListicleInclusion  { background: var(--type-slate); }
-.type-YouTubeVideo       { background: var(--type-purple); }
-.type-YouTubeOptimization { background: #7e22ce; }
-.type-Wikipedia          { background: #475569; }
-.type-PageRefresh        { background: var(--type-teal); }
-.type-LinkedInArticle    { background: var(--type-indigo); }
-.type-default            { background: var(--type-slate); }
+.ms-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.ms-count {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--red);
+  font-weight: 700;
+}
+.ms-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: -0.1px;
+}
+.ms-credits {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-tertiary);
+  background: var(--bg-card);
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 0.5px solid var(--border);
+  margin-left: auto;
+}
+.ms-body {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-top: 6px;
+}
 
 /* -------- Navigation index -------- */
 .nav-grid {

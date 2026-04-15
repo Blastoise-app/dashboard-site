@@ -1,20 +1,37 @@
 (async function () {
   const CLUSTER_COLORS = ['--red', '--type-blue', '--type-purple'];
-  const LEVER_SHORT = {
-    'Product Page': 'Product Page',
-    'Onsite Listicle': 'Listicle',
-    'Backlink': 'Backlink',
-    'Reddit Thread on SERP': 'Reddit SERP',
-    'Brand Endorsing Comment': 'Reddit Comments',
-    'Link + Subreddit': 'Reddit Link',
-    'Guest Post Listicle': 'Guest Post',
-    'Guest Post Listicle 2': 'Guest Post 2',
-    'Listicle Inclusion': 'Listicle Inclusion',
-    'Reddit Thread (LLM)': 'Reddit LLM',
-    'Brand Endorsing Comment (LLM)': 'Comments LLM',
-    'Link + Subreddit (LLM)': 'Link LLM',
-    'LinkedIn Pulse Article': 'LinkedIn',
-    'Schema Markup': 'Schema'
+
+  const LEVER_GROUPS = [
+    { id: 'productPage',       label: 'Product Page',        members: ['productPage'] },
+    { id: 'listicle',          label: 'Listicle',            members: ['onsiteListicle'] },
+    { id: 'backlink',          label: 'Backlink',            members: ['backlink'] },
+    { id: 'guestPost',         label: 'Guest Post Listicle', members: ['guestPostListicle', 'guestPostListicle2'] },
+    { id: 'listicleInclusion', label: 'Listicle Inclusion',  members: ['listicleInclusion'] },
+    { id: 'redditSerp',        label: 'Reddit SERP',         members: ['redditThreadOnSerp', 'brandEndorsingComment', 'linkSubreddit'] },
+    { id: 'redditLlms',        label: 'Reddit LLMs',         members: ['redditThreadLlm', 'brandEndorsingCommentLlm', 'linkSubredditLlm'] },
+    { id: 'linkedin',          label: 'LinkedIn',            members: ['linkedinPulseArticle'] },
+    { id: 'schema',            label: 'Schema',              members: ['schemaMarkup'] }
+  ];
+  const STATUS_RANK = { done: 3, inProgress: 2, proposed: 1, notDone: 0 };
+  const RANK_STATUS = ['notDone', 'proposed', 'inProgress', 'done'];
+  const KEYWORD_LIMIT = 10;
+
+  // Color dot per deliverable type — drives the timeline milestone dots.
+  const TYPE_DOT_COLOR = {
+    'Onsite Product Page':      '--type-green',
+    'Onsite Blog Listicle':     '--type-blue',
+    'Guest Post Listicle':      '--type-red',
+    'Listicle Inclusion':       '--type-slate',
+    'Reddit SEO Post':          '--type-orange',
+    'Reddit VIRAL GROWTH Post': '--type-orange',
+    'Reddit Comments':          '--type-orange',
+    'Backlink':                 '--type-olive',
+    'Backlink (Premium)':       '--type-olive',
+    'YouTube Video':            '--type-purple',
+    'YouTube Optimization':     '--type-purple',
+    'Wikipedia':                '--type-slate',
+    'Page Refresh':             '--type-teal',
+    'LinkedIn Article':         '--type-indigo'
   };
 
   const app = document.getElementById('app');
@@ -111,13 +128,6 @@
     app.appendChild(sectionHeading('How The Credit System Works'));
     if (credits.intro) app.appendChild(el('p', { className: 'section-intro', text: credits.intro }));
     app.appendChild(renderCredits(credits));
-  }
-
-  // MONTH-BY-MONTH SUMMARY
-  const monthSummaries = byKind('monthSummaries');
-  if (monthSummaries) {
-    app.appendChild(sectionHeading('Month-by-Month Summary'));
-    app.appendChild(renderMonthSummaries(monthSummaries));
   }
 
   // Visualization 3: 3-Month Roadmap
@@ -430,38 +440,36 @@
     const scroll = el('div', { className: 'matrix-scroll' });
     const t = el('table', { className: 'matrix' });
 
+    const topKeywords = geo.keywords.slice(0, KEYWORD_LIMIT);
+
     // Header
     const thead = el('thead');
     const trh = el('tr');
     trh.appendChild(el('th', { className: 'kw-col', text: 'Keyword / Prompt' }));
     trh.appendChild(el('th', { className: 'sv-col', text: 'SV' }));
-    const seoLastIdx = geo.levers.findLastIndex((l) => l.group === 'SEO');
-    geo.levers.forEach((lever, idx) => {
-      const short = LEVER_SHORT[lever.label] || lever.label;
-      const th = el('th', {
-        className: 'lever' + (idx === seoLastIdx ? ' seo-last' : ''),
-        text: short,
-        attrs: { title: lever.label }
-      });
-      trh.appendChild(th);
+    LEVER_GROUPS.forEach((group) => {
+      trh.appendChild(el('th', {
+        className: 'lever',
+        text: group.label
+      }));
     });
     thead.appendChild(trh);
     t.appendChild(thead);
 
     // Body
     const tbody = el('tbody');
-    geo.keywords.forEach((kw) => {
+    topKeywords.forEach((kw) => {
       const tr = el('tr');
       const kwCell = el('td', { className: 'kw-col' });
       kwCell.appendChild(el('span', { className: 'kw-name', text: kw.keyword }));
       tr.appendChild(kwCell);
       tr.appendChild(el('td', { className: 'sv-col', text: kw.svDisplay || '—' }));
-      geo.levers.forEach((lever, idx) => {
-        const status = kw.coverage[lever.id] || 'notDone';
-        const td = el('td', { className: idx === seoLastIdx ? 'seo-last' : '' });
+      LEVER_GROUPS.forEach((group) => {
+        const status = mergedStatus(kw.coverage, group.members);
+        const td = el('td');
         td.appendChild(el('span', {
           className: `dot ${status}`,
-          attrs: { title: `${lever.label} — ${statusLabel(status)}` }
+          attrs: { title: `${group.label} — ${statusLabel(status)}` }
         }));
         tr.appendChild(td);
       });
@@ -502,6 +510,16 @@
 
   function statusLabel(s) {
     return { proposed: 'Planned', inProgress: 'In Progress', done: 'Live', notDone: 'Not Done' }[s] || s;
+  }
+
+  function mergedStatus(coverage, memberIds) {
+    let best = 0;
+    memberIds.forEach((id) => {
+      const s = coverage[id] || 'notDone';
+      const r = STATUS_RANK[s] ?? 0;
+      if (r > best) best = r;
+    });
+    return RANK_STATUS[best];
   }
 
   /* ------------- Credits table ------------- */
@@ -547,59 +565,86 @@
   /* ------------- Roadmap timeline ------------- */
 
   function renderRoadmap(roadmap) {
-    const wrap = el('div', { className: 'roadmap' });
+    const wrap = el('div', { className: 'timeline' });
+
     roadmap.months.forEach((month, idx) => {
-      const col = el('div', { className: 'month-col' });
-      const card = el('div', { className: 'month-card' });
-      const head = el('div', { className: 'month-head', text: `Month ${idx + 1}` });
-      card.appendChild(head);
-      const rows = el('div', { className: 'month-rows' });
-      month.deliverables.forEach((d) => rows.appendChild(renderDeliverableRow(d)));
-      card.appendChild(rows);
-      col.appendChild(card);
-      col.appendChild(el('div', { className: 'month-total', text: `${month.totalCredits} credits` }));
-      wrap.appendChild(col);
+      const phaseLabel = el('div', { className: 'phase-label' });
+      phaseLabel.appendChild(el('span', { text: `Month ${idx + 1} — ${monthSubtitle(month.label)}` }));
+      phaseLabel.appendChild(el('span', { className: 'phase-cost', text: `${month.totalCredits} credits` }));
+      wrap.appendChild(phaseLabel);
+
+      const phase = el('div', { className: 'phase' });
+      const grouped = groupDeliverables(month.deliverables);
+      grouped.forEach((g) => phase.appendChild(renderMilestone(g)));
+      wrap.appendChild(phase);
+
+      if (idx < roadmap.months.length - 1) wrap.appendChild(el('div', { className: 'phase-gap' }));
     });
+
     return wrap;
   }
 
-  function renderDeliverableRow(d) {
-    const row = el('div', { className: 'deliv-row' });
-    const typeClass = typeToClass(d.type);
-    row.appendChild(el('span', { className: `type-chip ${typeClass}`, text: shortenType(d.type) }));
-    const titleText = d.keyword
-      ? `${arrowIf(d)}${d.keyword}`
-      : (d.title || d.type);
-    row.appendChild(el('span', { className: 'deliv-title', text: titleText, attrs: { title: d.title || d.keyword } }));
-    row.appendChild(el('span', { className: 'credit-num', text: String(d.credits) }));
-
-    const extra = el('div', { className: 'extra' });
-    if (d.title) extra.appendChild(el('div', { html: `<strong>${escapeHtml(d.title)}</strong>` }));
-    if (d.rationale) extra.appendChild(el('div', { text: d.rationale, attrs: { style: 'margin-top:4px' } }));
-    if (d.description) extra.appendChild(el('div', { text: d.description, attrs: { style: 'margin-top:4px;color:var(--text-tertiary)' } }));
-    row.appendChild(extra);
-
-    row.addEventListener('click', () => row.classList.toggle('open'));
-    return row;
+  function monthSubtitle(label) {
+    // "MONTH 1 — May 2026" → "May 2026"
+    const m = /—\s*(.+)$/.exec(label || '');
+    return m ? m[1] : '';
   }
 
-  function arrowIf(d) {
-    // When the title is a "refresh" / "outreach" type, prefix with arrow to indicate action on existing.
-    if (/refresh|outreach|optim/i.test(d.type)) return '→ ';
-    return '';
+  function groupDeliverables(deliverables) {
+    const order = [];
+    const map = new Map();
+    deliverables.forEach((d) => {
+      const key = d.type || 'Other';
+      if (!map.has(key)) {
+        order.push(key);
+        map.set(key, { type: key, items: [], totalCredits: 0, description: d.description });
+      }
+      const group = map.get(key);
+      group.items.push(d);
+      group.totalCredits += d.credits || 0;
+    });
+    return order.map((k) => map.get(k));
   }
 
-  function typeToClass(type) {
-    const clean = (type || '').replace(/\([^)]*\)/g, '').replace(/[^A-Za-z]/g, '').trim();
-    return clean ? `type-${clean}` : 'type-default';
+  function renderMilestone(group) {
+    const ms = el('div', { className: 'ms' });
+    const dotVar = TYPE_DOT_COLOR[group.type] || '--type-slate';
+    const dot = el('span', { className: 'ms-dot' });
+    dot.style.background = cssVar(dotVar);
+    dot.style.borderColor = cssVar(dotVar);
+    ms.appendChild(dot);
+
+    const header = el('div', { className: 'ms-header' });
+    header.appendChild(el('span', { className: 'ms-count', text: `${group.items.length}×` }));
+    header.appendChild(el('span', { className: 'ms-title', text: pluralizeType(group.type, group.items.length) }));
+    header.appendChild(el('span', { className: 'ms-credits', text: `${group.totalCredits} cr` }));
+    ms.appendChild(header);
+
+    const keywords = group.items
+      .map((d) => d.keyword)
+      .filter((k, i, a) => k && a.indexOf(k) === i);
+    if (keywords.length) {
+      const body = el('div', { className: 'ms-body' });
+      body.appendChild(document.createTextNode(keywords.join(' · ')));
+      ms.appendChild(body);
+    } else if (group.description) {
+      ms.appendChild(el('div', { className: 'ms-body', text: group.description }));
+    }
+    return ms;
   }
 
-  function shortenType(type) {
+  function pluralizeType(type, count) {
     if (!type) return '';
-    return type
-      .replace(/\s*\(.*?\)\s*/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
+    if (count <= 1) return type;
+    // Naive pluralization of the last word.
+    const parts = type.split(' ');
+    const last = parts[parts.length - 1];
+    if (/[^s]s$/.test(last) || /y$/.test(last)) {
+      parts[parts.length - 1] = last.replace(/y$/, 'ies');
+    } else if (!/s$/.test(last)) {
+      parts[parts.length - 1] = last + 's';
+    }
+    return parts.join(' ');
   }
 
   /* ------------- Nav ------------- */
