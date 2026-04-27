@@ -8,7 +8,8 @@
   },
   "scripts": {
     "fetch": "node scripts/fetch-sheet.mjs",
-    "serve": "python3 -m http.server -d docs 8000"
+    "serve": "python3 -m http.server -d docs 8000",
+    "bundle": "node scripts/build-standalone.mjs"
   },
   "dependencies": {
     "papaparse": "^5.4.1"
