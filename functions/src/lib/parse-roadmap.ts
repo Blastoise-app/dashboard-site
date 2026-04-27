@@ -1,4 +1,4 @@
-import type { Roadmap, RoadmapDeliverable } from "@shared/types.js";
+import type { Roadmap, RoadmapDeliverable } from "../../../shared/types.js";
 import { cell, normalizeStatus, type Row } from "./util.js";
 
 export function parseRoadmap(rows: Row[]): Roadmap {

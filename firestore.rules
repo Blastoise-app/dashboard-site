@@ -1,0 +1,68 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() { return request.auth != null; }
+    function role() { return request.auth.token.role; }
+    function isPlatformAdmin() { return isSignedIn() && role() == "platform_admin"; }
+    function isAgencyOf(agencyId) {
+      return isSignedIn() && role() == "agency" && request.auth.token.agencyId == agencyId;
+    }
+    // For client users, the token carries:
+    //   clientAgencies: string[]               — list of agency ids
+    //   clientKeys:     string[]               — list of "agencyId/clientId" composite keys
+    function isClientInAgency(agencyId) {
+      return isSignedIn()
+        && role() == "client"
+        && request.auth.token.clientAgencies.hasAny([agencyId]);
+    }
+    function isClientOf(agencyId, clientId) {
+      return isSignedIn()
+        && role() == "client"
+        && request.auth.token.clientKeys.hasAny([agencyId + "/" + clientId]);
+    }
+
+    // Agencies — readable by platform admins, the agency itself, and any client whose
+    // record lives under this agency. Writes are server-only (Cloud Functions / admin SDK).
+    match /agencies/{agencyId} {
+      allow read: if isPlatformAdmin()
+                 || isAgencyOf(agencyId)
+                 || isClientInAgency(agencyId);
+      allow write: if false;
+
+      match /clients/{clientId} {
+        allow read: if isPlatformAdmin()
+                   || isAgencyOf(agencyId)
+                   || isClientOf(agencyId, clientId);
+        allow write: if false;
+
+        match /monthlyReports/{reportId} {
+          allow read: if isPlatformAdmin()
+                     || isAgencyOf(agencyId)
+                     || isClientOf(agencyId, clientId);
+          allow write: if false;
+        }
+
+        match /sheetSnapshots/{tabKey} {
+          allow read: if isPlatformAdmin()
+                     || isAgencyOf(agencyId)
+                     || isClientOf(agencyId, clientId);
+          allow write: if false;
+        }
+      }
+    }
+
+    // Users — each signed-in user can read their own doc. Writes are server-only.
+    match /users/{uid} {
+      allow read: if isSignedIn() && (request.auth.uid == uid || isPlatformAdmin());
+      allow write: if false;
+    }
+
+    // Audit log — platform admin read; server-only writes.
+    match /auditLog/{eventId} {
+      allow read: if isPlatformAdmin();
+      allow write: if false;
+    }
+  }
+}

@@ -6,14 +6,19 @@
   "engines": {
     "node": "20"
   },
-  "main": "lib/index.js",
+  "main": "lib/functions/src/index.js",
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
     "lint": "tsc --noEmit"
   },
   "devDependencies": {
-    "typescript": "^5.6.3",
-    "@types/node": "^20.16.10"
+    "@types/node": "^20.16.10",
+    "tsx": "^4.21.0",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.8.0",
+    "firebase-functions": "^7.2.5"
   }
 }

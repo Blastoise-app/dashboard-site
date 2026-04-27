@@ -1,4 +1,4 @@
-import type { CoverageStatus, GeoTracker, GeoTrackerLever } from "@shared/types.js";
+import type { CoverageStatus, GeoTracker, GeoTrackerLever } from "../../../shared/types.js";
 import { cell, parseSv, parseCpc, normalizeStatus, type Row } from "./util.js";
 
 // First N levers (after KEYWORD INFO columns) are SEO; the rest are GEO.

@@ -1,4 +1,4 @@
-import type { Clusters, ClusterRow } from "@shared/types.js";
+import type { Clusters, ClusterRow } from "../../../shared/types.js";
 import { cell, parseSv, parseCpc, type Row } from "./util.js";
 
 // Row 0 has group names at columns 0, 5, 10 (separated by blank columns).

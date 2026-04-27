@@ -1,4 +1,4 @@
-import type { Overview, OverviewSection } from "@shared/types.js";
+import type { Overview, OverviewSection } from "../../../shared/types.js";
 import { cell, nonEmpty, type Row } from "./util.js";
 
 export function parseOverview(rows: Row[]): Overview {

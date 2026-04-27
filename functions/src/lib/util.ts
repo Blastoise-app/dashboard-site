@@ -1,4 +1,4 @@
-import type { CoverageStatus } from "@shared/types.js";
+import type { CoverageStatus } from "../../../shared/types.js";
 
 export type Row = string[];
 
