@@ -31,8 +31,19 @@ export default function SignIn() {
       if (e instanceof FirebaseError) {
         if (e.code === "auth/popup-closed-by-user") {
           setError("Sign-in cancelled.");
-        } else if (e.message?.includes("permission-denied") || e.message?.includes("isn't authorized")) {
-          setError("This email isn't authorized for any client or agency. Contact your administrator.");
+        } else if (
+          // Identity Platform blocking trigger rejection comes back as one of
+          // these opaque codes; the human-readable message we threw on the
+          // server doesn't make it through to the client.
+          e.message?.includes("error-code:-47") ||
+          e.code === "auth/internal-error" ||
+          e.code === "auth/admin-restricted-operation" ||
+          e.message?.includes("permission-denied") ||
+          e.message?.includes("isn't authorized")
+        ) {
+          setError(
+            "This email isn't authorized for any client or agency. Contact your administrator.",
+          );
         } else {
           setError(e.message ?? "Sign-in failed.");
         }
