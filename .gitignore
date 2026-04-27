@@ -1,3 +1,21 @@
 node_modules/
 .DS_Store
 *.log
+
+# Local Claude Code settings (per-user, not shared)
+.claude/
+
+# Service account keys / any creds — NEVER commit
+secrets/
+*.pem
+*.key
+
+# Build output
+dist/
+.firebase/
+*.tsbuildinfo
+
+# Local env
+.env
+.env.local
+.env.*.local
