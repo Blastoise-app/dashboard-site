@@ -1,17 +1,27 @@
 #!/usr/bin/env bash
 # Project-level override of the inherited Domain Restricted Sharing policy
-# (constraints/iam.allowedPolicyMemberDomains) to additionally allow `allUsers`.
-# The org's existing customer-id allowlist is preserved via inheritFromParent.
-# Then grants `allUsers` invoker on the blocking auth Cloud Run service.
+# (constraints/iam.allowedPolicyMemberDomains), allowing all members for IAM
+# bindings on this project only. Then grants `allUsers` invoker on the
+# blocking auth Cloud Run service.
 #
-# Why: Identity Platform calls blocking auth functions unauthenticated at the
-# IAM layer (validation happens via a signed JWT in the request body, which
-# firebase-functions verifies internally). The standard pattern per Firebase
-# docs is `allUsers` invoker. Without this override the function returns 403
-# on every call from IdP, breaking sign-in for new users.
+# Why allValues: ALLOW (and not a narrower allowedValues with `allUsers`):
+# the legacy `iam.allowedPolicyMemberDomains` constraint only accepts customer
+# IDs in its allowedValues list — it rejects `allUsers` as an invalid value.
+# The newer `iam.managed.allowedPolicyMemberDomains` does accept it, but the
+# org has the legacy version set, so a managed override at the project level
+# doesn't take effect. Result: the only project-level escape hatch is
+# allValues: ALLOW, which relaxes the constraint entirely for this project.
 #
-# Scope: this override applies only to project marketing-dashboard-site. Other
-# projects in the blastoise.app org keep the strict policy.
+# Why this is okay for now: the marketing-dashboard-site project only hosts
+# the SaaS itself. There's no other resource here that an accidental
+# `allUsers` IAM binding could expose. Other projects in the blastoise.app
+# org are unaffected.
+#
+# Why we need it: Identity Platform calls blocking auth functions
+# unauthenticated at the IAM layer (the function validates a signed JWT in
+# the request body, which firebase-functions verifies internally). Per
+# Firebase docs the standard pattern is `allUsers` invoker. Without this
+# override, IdP gets a 403 on every call, breaking sign-in for new users.
 
 set -euo pipefail
 
@@ -20,12 +30,10 @@ PROJECT_ID="marketing-dashboard-site"
 cat > /tmp/relax-policy.yaml <<EOF
 constraint: constraints/iam.allowedPolicyMemberDomains
 listPolicy:
-  allowedValues:
-  - allUsers
-  inheritFromParent: true
+  allValues: ALLOW
 EOF
 
-echo "Setting project-level org policy override (inherits org allowlist + allows allUsers)…"
+echo "Setting project-level org policy override (allValues: ALLOW)…"
 gcloud resource-manager org-policies set-policy /tmp/relax-policy.yaml \
   --project="$PROJECT_ID"
 
