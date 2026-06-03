@@ -1,3 +1,10 @@
 @import "tailwindcss";
-@import "./styles/strategy.css";
-@import "./styles/sections-v6.css";
+/* Legacy microsite CSS is imported into the `base` cascade layer so Tailwind's
+   `utilities` layer outranks it. Without this, strategy.css's unlayered
+   `* { margin:0; padding:0 }` reset beat every Tailwind margin/padding utility
+   (unlayered > layered, regardless of specificity), collapsing all spacing in
+   the React shell views (AgencyHome, ClientView, Reporting…). The strategy
+   dashboard sections use only strategy.css classes — no Tailwind utilities — so
+   demoting these sheets cannot regress them. */
+@import "./styles/strategy.css" layer(base);
+@import "./styles/sections-v6.css" layer(base);

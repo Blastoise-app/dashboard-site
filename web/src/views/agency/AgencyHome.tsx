@@ -18,7 +18,7 @@ export default function AgencyHome() {
           <p className="mb-3 text-xs font-medium uppercase tracking-[0.18em] text-[var(--red)]">
             Growth Marketing Pro
           </p>
-          <h1 className="font-[var(--font-display)] text-4xl leading-tight text-[var(--ink-0)]">
+          <h1 className="font-[family-name:var(--font-display)] text-4xl leading-tight text-[var(--ink-0)]">
             Clients
           </h1>
           {ready && clients.length > 0 && (
@@ -53,7 +53,7 @@ export default function AgencyHome() {
                       {c.brandName}
                     </div>
                   )}
-                  <div className="mb-2 font-[var(--font-display)] text-2xl leading-snug text-[var(--ink-0)]">
+                  <div className="mb-2 font-[family-name:var(--font-display)] text-2xl leading-snug text-[var(--ink-0)]">
                     {c.title}
                   </div>
                   {c.subtitle && (
