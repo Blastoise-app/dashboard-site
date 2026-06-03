@@ -1,17 +1,21 @@
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useParams } from "react-router-dom";
 import type { ReactNode } from "react";
 import { useAuth, type Role } from "./AuthProvider";
 
 interface Props {
   children: ReactNode;
   requireRole?: Role | Role[];
+  // When set, a `client` user may only open the :slug route param that matches
+  // one of their own clientKeys. Agency/platform_admin are unaffected.
+  restrictClientToOwn?: boolean;
 }
 
 // Wraps a route. Redirects to /signin if not authenticated; renders a 403 if
 // the user is signed in but lacks the required role.
-export default function RouteGuard({ children, requireRole }: Props) {
+export default function RouteGuard({ children, requireRole, restrictClientToOwn }: Props) {
   const { user, claims, loading } = useAuth();
   const location = useLocation();
+  const params = useParams();
 
   if (loading) {
     return <SplashState message="Loading…" />;
@@ -38,6 +42,14 @@ export default function RouteGuard({ children, requireRole }: Props) {
     }
   }
 
+  // A client may only view their own client dashboard.
+  if (restrictClientToOwn && claims.role === "client") {
+    const ownSlugs = (claims.clientKeys ?? []).map((k) => k.split("/")[1]);
+    if (!params.slug || !ownSlugs.includes(params.slug)) {
+      return <ForbiddenState role={claims.role} required={["your own client dashboard"]} />;
+    }
+  }
+
   return <>{children}</>;
 }
 
@@ -49,7 +61,7 @@ function SplashState({ message }: { message: string }) {
   );
 }
 
-function ForbiddenState({ role, required }: { role: Role; required: Role[] }) {
+function ForbiddenState({ role, required }: { role: Role; required: string[] }) {
   return (
     <div className="min-h-screen grid place-items-center bg-[var(--bg-page)] text-[var(--ink-1)] font-[var(--font-sans)] p-6">
       <div className="max-w-md text-center">

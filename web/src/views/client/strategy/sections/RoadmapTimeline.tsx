@@ -1,133 +1,127 @@
 import type { Roadmap, RoadmapDeliverable } from "@shared/types";
 
-const TYPE_DOT_COLOR: Record<string, string> = {
-  "Onsite Product Page": "--data-green",
-  "Onsite Blog Listicle": "--data-blue",
-  "Guest Post Listicle": "--red",
-  "Listicle Inclusion": "--data-slate",
-  "Reddit SEO Post": "--data-orange",
-  "Reddit VIRAL GROWTH Post": "--data-orange",
-  "Reddit Comments": "--data-orange",
-  Backlink: "--data-amber",
-  "Backlink (Premium)": "--data-amber",
-  "YouTube Video": "--data-purple",
-  "YouTube Optimization": "--data-purple",
-  Wikipedia: "--data-slate",
-  "Page Refresh": "--data-teal",
-  "LinkedIn Article": "--data-indigo",
-};
-
-interface Group {
-  type: string;
-  items: RoadmapDeliverable[];
-  totalCredits: number;
-  description?: string;
-}
-
+// V6 roadmap: one card per month (red month badge + eyebrow/date on the left,
+// deliverable + credit counts on the right) over a compact deliverable table
+// (Type · Deliverable · SV · Cr · Status · Reasoning).
 export default function RoadmapTimeline({ roadmap }: { roadmap: Roadmap }) {
   return (
-    <div className="timeline">
-      {roadmap.months.map((month, idx) => (
-        <div key={month.label}>
-          <div className="phase-label">
-            <span>
-              Month {idx + 1} — {monthSubtitle(month.label)}
-            </span>
-            <span className="phase-cost">{month.totalCredits} credits</span>
+    <div className="rm-root">
+      {roadmap.months.map((month, mIdx) => {
+        const { num, when } = splitMonthLabel(month.label, mIdx);
+        const dels = month.deliverables ?? [];
+        const credits =
+          month.totalCredits != null
+            ? month.totalCredits
+            : dels.reduce((s, d) => s + (Number(d.credits) || 0), 0);
+
+        return (
+          <div className="rm-month" key={month.label || mIdx}>
+            <div className="rm-month-head">
+              <div className="rm-month-headL">
+                <span className="rm-month-num">{String(mIdx + 1).padStart(2, "0")}</span>
+                <div>
+                  <div className="rm-month-eyebrow">{num}</div>
+                  {when && <div className="rm-month-when">{when}</div>}
+                </div>
+              </div>
+              <div className="rm-month-meta">
+                <span>
+                  <b>{dels.length}</b> deliverables
+                </span>
+                <span className="rm-dot" />
+                <span>
+                  <b>{credits}</b> credits
+                </span>
+              </div>
+            </div>
+            <div className="rm-scroll">
+              <table className="rm-table">
+                <thead>
+                  <tr>
+                    <th className="rm-c-type">Type</th>
+                    <th className="rm-c-del">Deliverable</th>
+                    <th className="rm-c-sv num">SV</th>
+                    <th className="rm-c-cr num">Cr</th>
+                    <th className="rm-c-status">Status</th>
+                    <th className="rm-c-why">Reasoning / Intent</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dels.map((d, i) => (
+                    <DeliverableRow d={d} key={`${d.type}-${d.keyword}-${i}`} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div className="phase">
-            {groupDeliverables(month.deliverables).map((g) => (
-              <Milestone group={g} key={g.type} />
-            ))}
-          </div>
-          {idx < roadmap.months.length - 1 && <div className="phase-gap" />}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
 
-function Milestone({ group }: { group: Group }) {
-  const dotVar = TYPE_DOT_COLOR[group.type] || "--data-slate";
-  const colorVar = `var(${dotVar})`;
-  const count = group.items.length;
-  const noun = count === 1 ? "deliverable" : "deliverables";
-  const desc = group.items.find((d) => d.description)?.description;
-  const keywords = uniq(group.items.map((d) => d.keyword).filter(Boolean));
+function DeliverableRow({ d }: { d: RoadmapDeliverable }) {
+  const typeColor = rmTypeColor(d.type);
+  const status = rmStatusMeta(d.statusRaw || d.status);
+  const label = d.title || d.keyword || "";
+  const showKw = d.keyword && d.keyword !== label;
+  const why = d.rationale || d.description || "";
+  const hasSv = d.searchVolume && String(d.searchVolume).trim() !== "";
+  const hasCr = d.credits != null && String(d.credits) !== "";
 
   return (
-    <div className="ms">
-      <span
-        className="ms-dot"
-        style={{ background: colorVar, borderColor: colorVar }}
-      />
-      <div className="ms-meta">
-        <span className="ms-meta-count">
-          {count} {noun}
+    <tr>
+      <td className="rm-c-type">
+        <span className="rm-pill" style={{ ["--p" as string]: typeColor }}>
+          {d.type || "—"}
         </span>
-        <span
-          className="ms-badge"
-          style={{
-            color: colorVar,
-            background: `color-mix(in srgb, ${colorVar} 14%, transparent)`,
-            borderColor: `color-mix(in srgb, ${colorVar} 35%, transparent)`,
-          }}
-        >
-          {group.totalCredits} credits
+      </td>
+      <td className="rm-c-del">
+        <span className="rm-del-kw">{label}</span>
+        {showKw && <span className="rm-del-meta">{d.keyword}</span>}
+      </td>
+      <td className="rm-c-sv num">
+        {hasSv ? d.searchVolume : <span className="rm-muted">—</span>}
+      </td>
+      <td className="rm-c-cr num">
+        {hasCr ? d.credits : <span className="rm-muted">—</span>}
+      </td>
+      <td className="rm-c-status">
+        <span className="rm-status" style={{ ["--p" as string]: status.color }}>
+          <span className="rm-status-dot" />
+          {d.statusRaw || status.label}
         </span>
-      </div>
-      <div className="ms-title">{pluralizeType(group.type, count)}</div>
-      {desc && <div className="ms-body">{desc}</div>}
-      {keywords.length > 0 && (
-        <div className="ms-deliver">
-          <span className="ms-deliver-label">Keywords: </span>
-          {keywords.join(" · ")}
-        </div>
-      )}
-    </div>
+      </td>
+      <td className="rm-c-why">{why}</td>
+    </tr>
   );
 }
 
-function groupDeliverables(deliverables: RoadmapDeliverable[]): Group[] {
-  const order: string[] = [];
-  const map = new Map<string, Group>();
-  for (const d of deliverables) {
-    const key = d.type || "Other";
-    if (!map.has(key)) {
-      order.push(key);
-      map.set(key, {
-        type: key,
-        items: [],
-        totalCredits: 0,
-        description: d.description,
-      });
-    }
-    const g = map.get(key)!;
-    g.items.push(d);
-    g.totalCredits += d.credits || 0;
-  }
-  return order.map((k) => map.get(k)!);
+// Color-code each deliverable type by category so the plan reads at a glance.
+function rmTypeColor(type: string): string {
+  const t = String(type || "").toLowerCase();
+  let token = "--data-slate";
+  if (/product page|blog listicle|onsite|new blog|page refresh/.test(t)) token = "--data-green";
+  else if (/guest post|listicle inclusion/.test(t)) token = "--data-blue";
+  else if (/reddit/.test(t)) token = "--data-purple";
+  else if (/youtube|video/.test(t)) token = "--data-pink";
+  else if (/backlink|wikipedia|authority/.test(t)) token = "--data-teal";
+  else if (/project|campaign|program/.test(t)) token = "--data-indigo";
+  return `var(${token})`;
 }
 
-function monthSubtitle(label: string): string {
-  // "MONTH 1 — May 2026" → "May 2026"
-  const m = /—\s*(.+)$/.exec(label || "");
-  return m ? m[1] : "";
+function rmStatusMeta(s: string): { color: string; label: string } {
+  const v = String(s || "").toLowerCase();
+  if (/live|done|publish|complete/.test(v)) return { color: "var(--data-green)", label: "Live" };
+  if (/progress|drafting|writing|building/.test(v))
+    return { color: "var(--data-amber)", label: "In Progress" };
+  if (/review/.test(v)) return { color: "var(--data-orange)", label: "In Review" };
+  return { color: "var(--data-slate)", label: s || "Ready to Start" };
 }
 
-function pluralizeType(type: string, count: number): string {
-  if (!type) return "";
-  if (count <= 1) return type;
-  const parts = type.split(" ");
-  const last = parts[parts.length - 1];
-  if (/[^s]s$/.test(last) || /y$/.test(last)) {
-    parts[parts.length - 1] = last.replace(/y$/, "ies");
-  } else if (!/s$/.test(last)) {
-    parts[parts.length - 1] = last + "s";
-  }
-  return parts.join(" ");
-}
-
-function uniq<T>(arr: T[]): T[] {
-  return arr.filter((v, i, a) => a.indexOf(v) === i);
+function splitMonthLabel(label: string, mIdx: number): { num: string; when: string } {
+  const parts = String(label || "").split(/\s*[—–-]\s*/);
+  const num = (parts[0] || `Month ${mIdx + 1}`).trim();
+  const when = parts.slice(1).join(" — ").trim();
+  return { num, when };
 }

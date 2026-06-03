@@ -1741,5 +1741,87 @@
         ]
       }
     ]
-  }
+  },
+  "contentReview": [
+    {
+      "id": "cr-001",
+      "title": "Best AI Image Generators in 2026 — outline",
+      "type": "Onsite Blog Listicle",
+      "kind": "Outline",
+      "keyword": "AI image generator",
+      "docUrl": "https://docs.google.com/document/d/1abcAIimage-outline",
+      "dueBy": "2026-04-26",
+      "isNew": true
+    },
+    {
+      "id": "cr-002",
+      "title": "Best AI Logo Generators for Business — full draft",
+      "type": "Onsite Blog Listicle",
+      "kind": "Draft",
+      "keyword": "AI logo generator",
+      "docUrl": "https://docs.google.com/document/d/2abcAIlogo-draft",
+      "dueBy": "2026-04-25",
+      "isNew": true
+    },
+    {
+      "id": "cr-003",
+      "title": "AI Image Generator product page — copy v2",
+      "type": "Onsite Product Page",
+      "kind": "Draft",
+      "keyword": "AI image generator",
+      "docUrl": "https://docs.google.com/document/d/3abcproduct-copy",
+      "dueBy": "2026-04-24",
+      "isNew": true
+    },
+    {
+      "id": "cr-004",
+      "title": "Logo Generator product page — outline",
+      "type": "Onsite Product Page",
+      "kind": "Outline",
+      "keyword": "logo generator",
+      "docUrl": "https://docs.google.com/document/d/4abclogogen-outline",
+      "dueBy": "2026-04-25",
+      "isNew": false
+    },
+    {
+      "id": "cr-005",
+      "title": "Best Free AI Image Generators (guest post target: TechRadar) — outline",
+      "type": "Guest Post Listicle",
+      "kind": "Outline",
+      "keyword": "free AI image generator",
+      "docUrl": "https://docs.google.com/document/d/5abcfree-guestpost",
+      "dueBy": "2026-04-24",
+      "isNew": false
+    },
+    {
+      "id": "cr-006",
+      "title": "Reddit SEO post — \"Midjourney alternatives worth trying\"",
+      "type": "Reddit SEO Post",
+      "kind": "Draft",
+      "keyword": "midjourney alternative",
+      "docUrl": "https://docs.google.com/document/d/6abcreddit-mj",
+      "dueBy": "2026-04-22",
+      "isNew": false
+    },
+    {
+      "id": "cr-007",
+      "title": "YouTube video script — \"I Tested the 10 Best AI Image Generators\"",
+      "type": "YouTube Video",
+      "kind": "Script",
+      "keyword": "AI image generator",
+      "docUrl": "https://docs.google.com/document/d/7abcyt-script",
+      "dueBy": "2026-04-19",
+      "isNew": false
+    },
+    {
+      "id": "cr-008",
+      "title": "AI Logo Generator — meta description + on-page SEO copy",
+      "type": "Onsite Product Page",
+      "kind": "Snippet",
+      "keyword": "AI logo generator",
+      "docUrl": "https://docs.google.com/document/d/8abcmeta-snippet",
+      "dueBy": "2026-04-17",
+      "isNew": false
+    }
+  ]
 }

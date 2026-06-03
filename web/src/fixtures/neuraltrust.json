@@ -1,0 +1,1111 @@
+{
+  "slug": "neuraltrust",
+  "title": "NeuralTrust — AI Security SEO & GEO Strategy",
+  "subtitle": "Search Everywhere Optimization Roadmap · Prepared by Growth Marketing Pro",
+  "brand": {
+    "name": "Growth Marketing Pro",
+    "chipBg": "#151D29"
+  },
+  "lastUpdated": "2026-05-30",
+  "clusters": {
+    "groups": [
+      {
+        "name": "AI agent security - Prio",
+        "rows": [
+          {
+            "keyword": "AI security",
+            "svDisplay": "13,200",
+            "sv": 13200,
+            "kd": 65
+          },
+          {
+            "keyword": "AI governance",
+            "svDisplay": "11,800",
+            "sv": 11800,
+            "kd": 67
+          },
+          {
+            "keyword": "AI cybersecurity",
+            "svDisplay": "11,000",
+            "sv": 11000,
+            "kd": 77
+          },
+          {
+            "keyword": "AI safety",
+            "svDisplay": "4,000",
+            "sv": 4000,
+            "kd": 61
+          },
+          {
+            "keyword": "AI gateway",
+            "svDisplay": "3,100",
+            "sv": 3100,
+            "kd": 48
+          },
+          {
+            "keyword": "ai governance tools",
+            "svDisplay": "2,800",
+            "sv": 2800,
+            "kd": 21
+          },
+          {
+            "keyword": "ai governance platform",
+            "svDisplay": "1,800",
+            "sv": 1800,
+            "kd": 34
+          },
+          {
+            "keyword": "ai governance software",
+            "svDisplay": "1,400",
+            "sv": 1400,
+            "kd": 36
+          },
+          {
+            "keyword": "AI red teaming",
+            "svDisplay": "1,200",
+            "sv": 1200,
+            "kd": 36
+          },
+          {
+            "keyword": "AI security companies",
+            "svDisplay": "990",
+            "sv": 990,
+            "kd": 57
+          },
+          {
+            "keyword": "ai cybersecurity tools",
+            "svDisplay": "730",
+            "sv": 730,
+            "kd": 49
+          },
+          {
+            "keyword": "AI agent security",
+            "svDisplay": "630",
+            "sv": 630,
+            "kd": 29
+          },
+          {
+            "keyword": "ai security software",
+            "svDisplay": "590",
+            "sv": 590,
+            "kd": 59
+          },
+          {
+            "keyword": "ai observability tools",
+            "svDisplay": "590",
+            "sv": 590,
+            "kd": 33
+          },
+          {
+            "keyword": "ai monitoring tools",
+            "svDisplay": "540",
+            "sv": 540,
+            "kd": 46
+          },
+          {
+            "keyword": "AI security platform",
+            "svDisplay": "430",
+            "sv": 430,
+            "kd": 69
+          },
+          {
+            "keyword": "ai governance tool",
+            "svDisplay": "420",
+            "sv": 420,
+            "kd": 25
+          },
+          {
+            "keyword": "ai risk management software",
+            "svDisplay": "420",
+            "sv": 420,
+            "kd": 32
+          },
+          {
+            "keyword": "llm security tools",
+            "svDisplay": "380",
+            "sv": 380,
+            "kd": 19
+          },
+          {
+            "keyword": "ai visibility software",
+            "svDisplay": "380",
+            "sv": 380,
+            "kd": 36
+          },
+          {
+            "keyword": "llm observability tools",
+            "svDisplay": "360",
+            "sv": 360,
+            "kd": 16
+          },
+          {
+            "keyword": "AI data security platform",
+            "svDisplay": "310",
+            "sv": 310,
+            "kd": 61
+          },
+          {
+            "keyword": "ai cybersecurity software",
+            "svDisplay": "210",
+            "sv": 210,
+            "kd": 55
+          },
+          {
+            "keyword": "best llm observability tools",
+            "svDisplay": "150",
+            "sv": 150,
+            "kd": 15
+          },
+          {
+            "keyword": "ai security tool",
+            "svDisplay": "140",
+            "sv": 140,
+            "kd": 64
+          },
+          {
+            "keyword": "ai safety software",
+            "svDisplay": "100",
+            "sv": 100,
+            "kd": 31
+          },
+          {
+            "keyword": "ai trism solution",
+            "svDisplay": "90",
+            "sv": 90,
+            "kd": 30
+          },
+          {
+            "keyword": "ai trism tools",
+            "svDisplay": "80",
+            "sv": 80,
+            "kd": 20
+          },
+          {
+            "keyword": "enterprise AI governance platform",
+            "svDisplay": "20",
+            "sv": 20,
+            "kd": 0
+          },
+          {
+            "keyword": "ai gateway software",
+            "svDisplay": "10",
+            "sv": 10,
+            "kd": 30
+          }
+        ]
+      },
+      {
+        "name": "Runtime security (GAF) - Prio",
+        "rows": [
+          {
+            "keyword": "AI firewall software",
+            "svDisplay": "1,900",
+            "sv": 1900,
+            "kd": 63
+          },
+          {
+            "keyword": "data masking tool",
+            "svDisplay": "940",
+            "sv": 940,
+            "kd": 22
+          },
+          {
+            "keyword": "data masking software",
+            "svDisplay": "820",
+            "sv": 820,
+            "kd": 27
+          },
+          {
+            "keyword": "bot detection software",
+            "svDisplay": "380",
+            "sv": 380,
+            "kd": 27
+          },
+          {
+            "keyword": "bot detection tools",
+            "svDisplay": "260",
+            "sv": 260,
+            "kd": 28
+          },
+          {
+            "keyword": "best data masking software",
+            "svDisplay": "90",
+            "sv": 90,
+            "kd": 20
+          }
+        ]
+      },
+      {
+        "name": "AI compliance",
+        "rows": [
+          {
+            "keyword": "ai compliance solution",
+            "svDisplay": "1,600",
+            "sv": 1600,
+            "kd": 50
+          },
+          {
+            "keyword": "ai compliance software",
+            "svDisplay": "870",
+            "sv": 870,
+            "kd": 59
+          },
+          {
+            "keyword": "ai compliance tools",
+            "svDisplay": "590",
+            "sv": 590,
+            "kd": 26
+          },
+          {
+            "keyword": "AI compliance solutions",
+            "svDisplay": "370",
+            "sv": 370,
+            "kd": 64
+          },
+          {
+            "keyword": "ai compliance platform",
+            "svDisplay": "160",
+            "sv": 160,
+            "kd": 60
+          },
+          {
+            "keyword": "ai safety platforms for compliance",
+            "svDisplay": "140",
+            "sv": 140,
+            "kd": 16
+          }
+        ]
+      },
+      {
+        "name": "Threat Detection",
+        "rows": [
+          {
+            "keyword": "threat detection tools",
+            "svDisplay": "700",
+            "sv": 700,
+            "kd": 30
+          },
+          {
+            "keyword": "red teaming tools",
+            "svDisplay": "680",
+            "sv": 680,
+            "kd": 21
+          },
+          {
+            "keyword": "ai red teaming tools",
+            "svDisplay": "230",
+            "sv": 230,
+            "kd": 15
+          },
+          {
+            "keyword": "threat detection platform",
+            "svDisplay": "150",
+            "sv": 150,
+            "kd": 51
+          },
+          {
+            "keyword": "ai discovery response software",
+            "svDisplay": "70",
+            "sv": 70,
+            "kd": 0
+          },
+          {
+            "keyword": "shadow ai discovery",
+            "svDisplay": "50",
+            "sv": 50,
+            "kd": 0
+          }
+        ]
+      },
+      {
+        "name": "Competitors",
+        "rows": [
+          {
+            "keyword": "holistic alternatives",
+            "svDisplay": "510",
+            "sv": 510,
+            "kd": 58
+          },
+          {
+            "keyword": "varonis alternatives",
+            "svDisplay": "200",
+            "sv": 200,
+            "kd": 0
+          },
+          {
+            "keyword": "zenity alternatives",
+            "svDisplay": "120",
+            "sv": 120,
+            "kd": 0
+          },
+          {
+            "keyword": "alice alternative",
+            "svDisplay": "30",
+            "sv": 30,
+            "kd": 0
+          },
+          {
+            "keyword": "apiiro alternatives",
+            "svDisplay": "10",
+            "sv": 10,
+            "kd": 0
+          }
+        ]
+      }
+    ]
+  },
+  "geoTracker": {
+    "levers": [
+      {
+        "id": "page",
+        "label": "Page",
+        "group": "SEO"
+      },
+      {
+        "id": "listicle",
+        "label": "Listicle",
+        "group": "SEO"
+      },
+      {
+        "id": "backlinks",
+        "label": "Backlinks",
+        "group": "SEO"
+      },
+      {
+        "id": "guestPostListicle",
+        "label": "Guest Post Listicle",
+        "group": "GEO"
+      },
+      {
+        "id": "listicleInclusion",
+        "label": "Listicle Inclusion",
+        "group": "GEO"
+      },
+      {
+        "id": "redditThreadOnSerp",
+        "label": "Reddit Thread on SERP",
+        "group": "GEO"
+      },
+      {
+        "id": "redditThreadInfluencingLlms",
+        "label": "Reddit Thread influencing LLMs",
+        "group": "GEO"
+      },
+      {
+        "id": "linkedinPulseArticle",
+        "label": "Linkedin Pulse Article",
+        "group": "GEO"
+      },
+      {
+        "id": "wikipedia",
+        "label": "Wikipedia",
+        "group": "GEO"
+      }
+    ],
+    "keywords": [
+      {
+        "keyword": "agentic ai security software",
+        "svDisplay": "90",
+        "sv": 90,
+        "coverage": {
+          "page": "notDone",
+          "listicle": "proposed",
+          "backlinks": "notDone",
+          "guestPostListicle": "proposed",
+          "listicleInclusion": "notDone",
+          "redditThreadOnSerp": "notDone",
+          "redditThreadInfluencingLlms": "notDone",
+          "linkedinPulseArticle": "notDone",
+          "wikipedia": "notDone"
+        }
+      },
+      {
+        "keyword": "ai governance tools",
+        "svDisplay": "2,800",
+        "sv": 2800,
+        "coverage": {
+          "page": "notDone",
+          "listicle": "proposed",
+          "backlinks": "proposed",
+          "guestPostListicle": "notDone",
+          "listicleInclusion": "notDone",
+          "redditThreadOnSerp": "notDone",
+          "redditThreadInfluencingLlms": "notDone",
+          "linkedinPulseArticle": "notDone",
+          "wikipedia": "notDone"
+        }
+      },
+      {
+        "keyword": "AI security companies",
+        "svDisplay": "990",
+        "sv": 990,
+        "coverage": {
+          "page": "notDone",
+          "listicle": "proposed",
+          "backlinks": "notDone",
+          "guestPostListicle": "notDone",
+          "listicleInclusion": "notDone",
+          "redditThreadOnSerp": "notDone",
+          "redditThreadInfluencingLlms": "notDone",
+          "linkedinPulseArticle": "notDone",
+          "wikipedia": "notDone"
+        }
+      },
+      {
+        "keyword": "ai cybersecurity tools",
+        "svDisplay": "730",
+        "sv": 730,
+        "coverage": {
+          "page": "notDone",
+          "listicle": "proposed",
+          "backlinks": "notDone",
+          "guestPostListicle": "notDone",
+          "listicleInclusion": "notDone",
+          "redditThreadOnSerp": "notDone",
+          "redditThreadInfluencingLlms": "notDone",
+          "linkedinPulseArticle": "notDone",
+          "wikipedia": "notDone"
+        }
+      },
+      {
+        "keyword": "ai security software",
+        "svDisplay": "590",
+        "sv": 590,
+        "coverage": {
+          "page": "proposed",
+          "listicle": "proposed",
+          "backlinks": "proposed",
+          "guestPostListicle": "notDone",
+          "listicleInclusion": "notDone",
+          "redditThreadOnSerp": "notDone",
+          "redditThreadInfluencingLlms": "notDone",
+          "linkedinPulseArticle": "notDone",
+          "wikipedia": "notDone"
+        }
+      },
+      {
+        "keyword": "ai safety software",
+        "svDisplay": "100",
+        "sv": 100,
+        "coverage": {
+          "page": "notDone",
+          "listicle": "proposed",
+          "backlinks": "notDone",
+          "guestPostListicle": "notDone",
+          "listicleInclusion": "notDone",
+          "redditThreadOnSerp": "notDone",
+          "redditThreadInfluencingLlms": "notDone",
+          "linkedinPulseArticle": "notDone",
+          "wikipedia": "notDone"
+        }
+      },
+      {
+        "keyword": "ai gateway software",
+        "svDisplay": "10",
+        "sv": 10,
+        "coverage": {
+          "page": "notDone",
+          "listicle": "notDone",
+          "backlinks": "notDone",
+          "guestPostListicle": "notDone",
+          "listicleInclusion": "notDone",
+          "redditThreadOnSerp": "notDone",
+          "redditThreadInfluencingLlms": "notDone",
+          "linkedinPulseArticle": "notDone",
+          "wikipedia": "notDone"
+        }
+      },
+      {
+        "keyword": "AI firewall software",
+        "svDisplay": "1,900",
+        "sv": 1900,
+        "coverage": {
+          "page": "notDone",
+          "listicle": "notDone",
+          "backlinks": "notDone",
+          "guestPostListicle": "notDone",
+          "listicleInclusion": "notDone",
+          "redditThreadOnSerp": "notDone",
+          "redditThreadInfluencingLlms": "notDone",
+          "linkedinPulseArticle": "notDone",
+          "wikipedia": "notDone"
+        }
+      },
+      {
+        "keyword": "AI data security platform",
+        "svDisplay": "310",
+        "sv": 310,
+        "coverage": {
+          "page": "notDone",
+          "listicle": "notDone",
+          "backlinks": "notDone",
+          "guestPostListicle": "notDone",
+          "listicleInclusion": "notDone",
+          "redditThreadOnSerp": "notDone",
+          "redditThreadInfluencingLlms": "notDone",
+          "linkedinPulseArticle": "notDone",
+          "wikipedia": "notDone"
+        }
+      },
+      {
+        "keyword": "red teaming tools",
+        "svDisplay": "680",
+        "sv": 680,
+        "coverage": {
+          "page": "notDone",
+          "listicle": "notDone",
+          "backlinks": "notDone",
+          "guestPostListicle": "notDone",
+          "listicleInclusion": "notDone",
+          "redditThreadOnSerp": "notDone",
+          "redditThreadInfluencingLlms": "notDone",
+          "linkedinPulseArticle": "notDone",
+          "wikipedia": "notDone"
+        }
+      },
+      {
+        "keyword": "ai compliance solution",
+        "svDisplay": "1,600",
+        "sv": 1600,
+        "coverage": {
+          "page": "notDone",
+          "listicle": "notDone",
+          "backlinks": "notDone",
+          "guestPostListicle": "notDone",
+          "listicleInclusion": "notDone",
+          "redditThreadOnSerp": "notDone",
+          "redditThreadInfluencingLlms": "notDone",
+          "linkedinPulseArticle": "notDone",
+          "wikipedia": "notDone"
+        }
+      },
+      {
+        "keyword": "ai observability tools",
+        "svDisplay": "590",
+        "sv": 590,
+        "coverage": {
+          "page": "notDone",
+          "listicle": "notDone",
+          "backlinks": "notDone",
+          "guestPostListicle": "notDone",
+          "listicleInclusion": "notDone",
+          "redditThreadOnSerp": "notDone",
+          "redditThreadInfluencingLlms": "notDone",
+          "linkedinPulseArticle": "notDone",
+          "wikipedia": "notDone"
+        }
+      },
+      {
+        "keyword": "ai monitoring tools",
+        "svDisplay": "540",
+        "sv": 540,
+        "coverage": {
+          "page": "notDone",
+          "listicle": "notDone",
+          "backlinks": "notDone",
+          "guestPostListicle": "notDone",
+          "listicleInclusion": "notDone",
+          "redditThreadOnSerp": "notDone",
+          "redditThreadInfluencingLlms": "notDone",
+          "linkedinPulseArticle": "notDone",
+          "wikipedia": "notDone"
+        }
+      },
+      {
+        "keyword": "ai risk management software",
+        "svDisplay": "420",
+        "sv": 420,
+        "coverage": {
+          "page": "notDone",
+          "listicle": "notDone",
+          "backlinks": "notDone",
+          "guestPostListicle": "notDone",
+          "listicleInclusion": "notDone",
+          "redditThreadOnSerp": "notDone",
+          "redditThreadInfluencingLlms": "notDone",
+          "linkedinPulseArticle": "notDone",
+          "wikipedia": "notDone"
+        }
+      },
+      {
+        "keyword": "data masking tool",
+        "svDisplay": "940",
+        "sv": 940,
+        "coverage": {
+          "page": "notDone",
+          "listicle": "notDone",
+          "backlinks": "notDone",
+          "guestPostListicle": "notDone",
+          "listicleInclusion": "notDone",
+          "redditThreadOnSerp": "notDone",
+          "redditThreadInfluencingLlms": "notDone",
+          "linkedinPulseArticle": "notDone",
+          "wikipedia": "notDone"
+        }
+      },
+      {
+        "keyword": "threat detection tools",
+        "svDisplay": "700",
+        "sv": 700,
+        "coverage": {
+          "page": "notDone",
+          "listicle": "notDone",
+          "backlinks": "notDone",
+          "guestPostListicle": "notDone",
+          "listicleInclusion": "notDone",
+          "redditThreadOnSerp": "notDone",
+          "redditThreadInfluencingLlms": "notDone",
+          "linkedinPulseArticle": "notDone",
+          "wikipedia": "notDone"
+        }
+      },
+      {
+        "keyword": "bot detection software",
+        "svDisplay": "380",
+        "sv": 380,
+        "coverage": {
+          "page": "notDone",
+          "listicle": "notDone",
+          "backlinks": "notDone",
+          "guestPostListicle": "notDone",
+          "listicleInclusion": "notDone",
+          "redditThreadOnSerp": "notDone",
+          "redditThreadInfluencingLlms": "notDone",
+          "linkedinPulseArticle": "notDone",
+          "wikipedia": "notDone"
+        }
+      },
+      {
+        "keyword": "holistic alternatives",
+        "svDisplay": "510",
+        "sv": 510,
+        "coverage": {
+          "page": "notDone",
+          "listicle": "notDone",
+          "backlinks": "notDone",
+          "guestPostListicle": "notDone",
+          "listicleInclusion": "notDone",
+          "redditThreadOnSerp": "notDone",
+          "redditThreadInfluencingLlms": "notDone",
+          "linkedinPulseArticle": "notDone",
+          "wikipedia": "notDone"
+        }
+      },
+      {
+        "keyword": "varonis alternatives",
+        "svDisplay": "200",
+        "sv": 200,
+        "coverage": {
+          "page": "notDone",
+          "listicle": "notDone",
+          "backlinks": "notDone",
+          "guestPostListicle": "notDone",
+          "listicleInclusion": "notDone",
+          "redditThreadOnSerp": "notDone",
+          "redditThreadInfluencingLlms": "notDone",
+          "linkedinPulseArticle": "notDone",
+          "wikipedia": "notDone"
+        }
+      },
+      {
+        "keyword": "zenity alternatives",
+        "svDisplay": "120",
+        "sv": 120,
+        "coverage": {
+          "page": "notDone",
+          "listicle": "notDone",
+          "backlinks": "notDone",
+          "guestPostListicle": "notDone",
+          "listicleInclusion": "notDone",
+          "redditThreadOnSerp": "notDone",
+          "redditThreadInfluencingLlms": "notDone",
+          "linkedinPulseArticle": "notDone",
+          "wikipedia": "notDone"
+        }
+      }
+    ]
+  },
+  "roadmap": {
+    "intro": "Live publishing roadmap across the engagement — every deliverable with its current production status and supporting docs.",
+    "months": [
+      {
+        "label": "MONTH 1 — May 2026",
+        "totalCredits": 7,
+        "deliverables": [
+          {
+            "credits": 2,
+            "type": "New Blog",
+            "keyword": "ai security companies and vendors",
+            "title": "ai security companies and vendors",
+            "rationale": "",
+            "description": "priority kwd, start building up kywds around ai security in month 1, high search volume, moderate KD but will support with backlinks once it goes live",
+            "searchVolume": "990",
+            "status": "inProgress",
+            "statusRaw": "Client Reviewing Draft",
+            "docLink": "https://docs.google.com/document/d/1gVFbYrBifHAhOkZjh5jq6GDu7QuS69NmtGb3DdD3-MA/edit?tab=t.0",
+            "asOf": "5/11"
+          },
+          {
+            "credits": 2,
+            "type": "New Blog",
+            "keyword": "ai governance tools",
+            "title": "ai governance tools",
+            "rationale": "",
+            "description": "priority kywd for the client, very high search volume, easy KD; prioritizing listicle for month 1 both for SERP traffic benefit + AI citations/mention",
+            "searchVolume": "2,800",
+            "status": "inProgress",
+            "statusRaw": "Drafting in Progress",
+            "docLink": "https://docs.google.com/document/d/1_UjIJ0geyNx_HcyaTJkWNUJhMv178ajGG0MNsZe4qqk/edit?tab=t.0",
+            "asOf": "5/11"
+          },
+          {
+            "credits": 1,
+            "type": "Page Refresh",
+            "keyword": "agentic ai security software",
+            "title": "agentic ai security software",
+            "rationale": "",
+            "description": "top priority page for client; currently driving no traffic/not ranking for keywords with SV, recommending high intent product page as priority for month 1; optimize for \"ai security software\" but layer in \"ai agent security software\" as a secondary kywd throughout, as this messaging is important for client; SERP and LLMs also respond very well to page refreshes, so we should continuously bake these into our roadmaps",
+            "searchVolume": "590",
+            "status": "inProgress",
+            "statusRaw": "Drafting in Progress",
+            "docLink": "https://docs.google.com/document/d/1Uq66ky66bpmalxGZo1HJXKKfRd3VgS6tYNAqvMi9PUQ/edit?tab=t.0",
+            "existingLink": "https://neuraltrust.ai/ai-agent-security",
+            "asOf": "5/6"
+          },
+          {
+            "credits": 1,
+            "type": "Backlink",
+            "keyword": "ai governance tools",
+            "title": "ai governance tools",
+            "rationale": "",
+            "description": "backlinks essential for building authority signals with Google; recommending high sv prio kywd to the homepage",
+            "searchVolume": "2,800",
+            "status": "inProgress",
+            "statusRaw": "Link in Progress",
+            "existingLink": "https://neuraltrust.ai/",
+            "asOf": "5/11"
+          },
+          {
+            "credits": 1,
+            "type": "Backlink",
+            "keyword": "ai security software",
+            "title": "ai security software",
+            "rationale": "",
+            "description": "backlink for high prio keyword to the homepage",
+            "searchVolume": "590",
+            "status": "inProgress",
+            "statusRaw": "Link in Progress",
+            "existingLink": "https://neuraltrust.ai/",
+            "asOf": "5/11"
+          },
+          {
+            "credits": 0,
+            "type": "Project",
+            "keyword": "Manual outreach campaign for listicle inclusion running",
+            "title": "Manual outreach campaign for listicle inclusion running",
+            "rationale": "",
+            "description": "",
+            "searchVolume": "",
+            "status": "inProgress",
+            "statusRaw": "Link in Progress",
+            "asOf": "5/11"
+          }
+        ]
+      },
+      {
+        "label": "MONTH 2 — June 2026",
+        "totalCredits": 7,
+        "deliverables": [
+          {
+            "credits": 2,
+            "type": "New Blog",
+            "keyword": "ai cybersecurity tools",
+            "title": "ai cybersecurity tools",
+            "rationale": "",
+            "description": "prio kywd; good search volume, prioritize onsite listicle to build up onsite foundation for SERP + AI search",
+            "searchVolume": "730",
+            "status": "inProgress",
+            "statusRaw": "Client Reviewing Outline",
+            "docLink": "https://docs.google.com/document/d/1QYOKIqYDjxrmHbguwkiWfLNgL2SRX4OH0yBM9hyU6-w/edit?tab=t.0",
+            "asOf": "5/6"
+          },
+          {
+            "credits": 2,
+            "type": "New Blog",
+            "keyword": "ai security software and tools",
+            "title": "ai security software and tools",
+            "rationale": "",
+            "description": "serp is different for this vs ai security companies, so recommending a separate listicle to capture search for this high intent kywd - work in \"ai agent security software / agentic ai software\" as secondary kywds in the messaging to position client in this space",
+            "searchVolume": "590",
+            "status": "inProgress",
+            "statusRaw": "Client Reviewing Outline",
+            "docLink": "https://docs.google.com/document/d/1-FYuSw2VtlgqV86faXEkFaOxGK-0zJpNt6m9q_M3TEw/edit?tab=t.0",
+            "asOf": "5/6"
+          },
+          {
+            "credits": 1,
+            "type": "Page Refresh",
+            "keyword": "ai firewall software",
+            "title": "ai firewall software",
+            "rationale": "",
+            "description": "a top priority page for the client, approved to optimize for AI firewall software, very good SV, more competitive so need to prioritize backlinks to this page but even without backlinks, this can be cited in AI search so double benefit there;  SERP and LLMs also respond very well to page refreshes, so we should continuously bake these into our roadmaps",
+            "searchVolume": "1,900",
+            "status": "inProgress",
+            "statusRaw": "Client Reviewing Outline",
+            "docLink": "https://docs.google.com/document/d/1lrYoZbNJw_mTSBAVRUtOptajyn4cIQyHJPfaq2dPA_I/edit?tab=t.0",
+            "existingLink": "https://neuraltrust.ai/generative-application-firewall",
+            "asOf": "5/6"
+          },
+          {
+            "credits": 1,
+            "type": "Backlink",
+            "keyword": "agentic ai security software",
+            "title": "agentic ai security software",
+            "rationale": "",
+            "description": "backlink to newly refreshed page",
+            "searchVolume": "590",
+            "status": "proposed",
+            "statusRaw": "Ready to Start",
+            "existingLink": "https://neuraltrust.ai/ai-agent-security",
+            "asOf": "5/6"
+          },
+          {
+            "credits": 1,
+            "type": "Backlink",
+            "keyword": "ai security companies",
+            "title": "ai security companies",
+            "rationale": "",
+            "description": "backlink to homepage for high SV, high intent kywd",
+            "searchVolume": "990",
+            "status": "proposed",
+            "statusRaw": "Ready to Start",
+            "existingLink": "https://neuraltrust.ai/",
+            "asOf": "5/6"
+          },
+          {
+            "credits": 0,
+            "type": "Project",
+            "keyword": "Manual outreach campaign for listicle inclusion running",
+            "title": "Manual outreach campaign for listicle inclusion running",
+            "rationale": "",
+            "description": "",
+            "searchVolume": "",
+            "status": "proposed",
+            "statusRaw": "Ready to Start",
+            "asOf": "5/6"
+          }
+        ]
+      },
+      {
+        "label": "MONTH 3 — July 2026",
+        "totalCredits": 7,
+        "deliverables": [
+          {
+            "credits": 2,
+            "type": "New Blog",
+            "keyword": "agentic AI security solutions",
+            "title": "agentic AI security solutions",
+            "rationale": "",
+            "description": "ai agent security software secondary kyword/include throughout the article when talking about the client",
+            "searchVolume": "90",
+            "status": "proposed",
+            "statusRaw": "Ready to Start",
+            "asOf": "5/6"
+          },
+          {
+            "credits": 1,
+            "type": "New Blog",
+            "keyword": "ai safety software",
+            "title": "ai safety software",
+            "rationale": "",
+            "description": "prio keyword for the client; serp is different than the previous kywds so it makes sense to do a separate article for this; pushing to month 3 because still want to prio this kywd but lower sv than the other priority keywords; checked the SERP, this looks like it can be 1 cred based on current word count I see ranking",
+            "searchVolume": "100",
+            "status": "proposed",
+            "statusRaw": "Ready to Start",
+            "asOf": "5/6"
+          },
+          {
+            "credits": 2,
+            "type": "Guest Post Listicle",
+            "keyword": "agentic AI security solutions",
+            "title": "agentic AI security solutions",
+            "rationale": "",
+            "description": "start layering in offsite content; prioritizing agentic AI security kywd, as this is a top priority for the client to get ahead in",
+            "searchVolume": "90",
+            "status": "proposed",
+            "statusRaw": "Ready to Start",
+            "asOf": "5/6"
+          },
+          {
+            "credits": 1,
+            "type": "Backlink",
+            "keyword": "ai security companies: link to new blog from month 1",
+            "title": "ai security companies: link to new blog from month 1",
+            "rationale": "",
+            "description": "prioritizing backlinks to new content to boost authority",
+            "searchVolume": "990",
+            "status": "proposed",
+            "statusRaw": "Ready to Start",
+            "asOf": "5/6"
+          },
+          {
+            "credits": 1,
+            "type": "Backlink",
+            "keyword": "ai governance tools: link to new blog from month 1",
+            "title": "ai governance tools: link to new blog from month 1",
+            "rationale": "",
+            "description": "prioritizing backlinks to new content to boost authority",
+            "searchVolume": "",
+            "status": "proposed",
+            "statusRaw": "Ready to Start",
+            "asOf": "5/6"
+          },
+          {
+            "credits": 0,
+            "type": "Project",
+            "keyword": "Manual outreach campaign for listicle inclusion running",
+            "title": "Manual outreach campaign for listicle inclusion running",
+            "rationale": "",
+            "description": "",
+            "searchVolume": "",
+            "status": "proposed",
+            "statusRaw": "Ready to Start",
+            "asOf": "5/6"
+          },
+          {
+            "credits": 0,
+            "type": "Project",
+            "keyword": "circle back on Wikipedia project",
+            "title": "circle back on Wikipedia project",
+            "rationale": "",
+            "description": "",
+            "searchVolume": "",
+            "status": "proposed",
+            "statusRaw": "Ready to Start"
+          }
+        ]
+      }
+    ]
+  },
+  "kpi": {
+    "objectives": [
+      {
+        "objective": "Support Organic Revenue Growth",
+        "funnel": "Visibility",
+        "kpi": "SEO: Target keywords on page 1 google",
+        "baseline": "0",
+        "date": "April 2026",
+        "tool": "Semrush/GSC"
+      },
+      {
+        "objective": "",
+        "funnel": "",
+        "kpi": "GEO: Share of Voice",
+        "baseline": "1.80%",
+        "date": "April 2026",
+        "tool": "Athena"
+      },
+      {
+        "objective": "",
+        "funnel": "",
+        "kpi": "GEO: Mention Rate",
+        "baseline": "2%",
+        "date": "April 2026",
+        "tool": "Athena"
+      },
+      {
+        "objective": "",
+        "funnel": "",
+        "kpi": "GEO: Citation Rate",
+        "baseline": "0.60%",
+        "date": "April 2026",
+        "tool": "Athena"
+      },
+      {
+        "objective": "",
+        "funnel": "Traffic",
+        "kpi": "SEO: Google organic traffic",
+        "baseline": "~4K/month",
+        "date": "Average Q1 2026",
+        "tool": "GSC"
+      },
+      {
+        "objective": "",
+        "funnel": "",
+        "kpi": "GEO: Referral traffic from AI Platforms",
+        "baseline": "91",
+        "date": "Sessions April 2026",
+        "tool": "GA4"
+      },
+      {
+        "objective": "",
+        "funnel": "",
+        "kpi": "GEO: Branded organic traffic",
+        "baseline": "~770 average",
+        "date": "Average Jan-April 2026",
+        "tool": "GSC"
+      },
+      {
+        "objective": "",
+        "funnel": "",
+        "kpi": "GEO: Direct Traffic in GA4",
+        "baseline": "~1.2k average",
+        "date": "Average Jan-April 2026",
+        "tool": "GA4"
+      },
+      {
+        "objective": "",
+        "funnel": "Conversions + Revenue",
+        "kpi": "HDYHAU Survey AI Models",
+        "baseline": "",
+        "date": "",
+        "tool": ""
+      },
+      {
+        "objective": "",
+        "funnel": "",
+        "kpi": "Book a Demo driven from SEO + GEO",
+        "baseline": "",
+        "date": "",
+        "tool": ""
+      },
+      {
+        "objective": "",
+        "funnel": "",
+        "kpi": "Pipeline driven from SEO + GEO",
+        "baseline": "",
+        "date": "",
+        "tool": ""
+      }
+    ],
+    "targets": [
+      {
+        "kpi": "Mentions (AI search)",
+        "description": "Your share of mentions in relevant responses",
+        "baseline": "2%",
+        "m3": "5%",
+        "m6": "15%",
+        "m12": "20%",
+        "notes": "goal to outpace current competitor mention %"
+      },
+      {
+        "kpi": "Share of Voice (Ai search)",
+        "description": "How often AI mentions your brand vs competitors",
+        "baseline": "1.8 %",
+        "m3": "3%",
+        "m6": "13%",
+        "m12": "16%",
+        "notes": "goal to get NeuralTrust in current top 3"
+      },
+      {
+        "kpi": "Organic Traffic",
+        "description": "Organic traffic (clicks) going to your website",
+        "baseline": "4.5K/month",
+        "m3": "7,000 (+55%)",
+        "m6": "10,000 (+43%)",
+        "m12": "15,000 (+50%)",
+        "notes": "Aggressive content strategy required to significanlty surpass our competitors here; high intent/traffic driving content"
+      }
+    ]
+  }
+}

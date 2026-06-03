@@ -1,0 +1,28 @@
+{
+  "agencyId": "gmp",
+  "clientId": "neuraltrust",
+  "slug": "neuraltrust",
+  "name": "NeuralTrust",
+  "title": "NeuralTrust — AI Security SEO & GEO Strategy",
+  "subtitle": "Search Everywhere Optimization Roadmap · Prepared by Growth Marketing Pro",
+  "brand": {
+    "name": "Growth Marketing Pro",
+    "chipBg": "#151D29"
+  },
+  "allowedDomains": ["neuraltrust.ai"],
+  "sheetId": "1Ye47tP_PXUNQz-3m-nY_08dvBF3cCI6ilZ7C-dDqJ3o",
+  "note": "Live ingest via Firestore (syncSheetsScheduled), reading tabs by NAME with a service account. tabTitles below are the exact live tab titles. Seed into Firestore with: npx tsx functions/src/seedClient.ts neuraltrust",
+  "tabTitles": {
+    "roadmap": "Roadmap Status",
+    "geoTracker": "GEO Tracker",
+    "clusters": "Clusters",
+    "kpiObjectives": "KPI Tracker",
+    "performanceProjections": "Performance Projections"
+  },
+  "expectMinimums": {
+    "clusterGroups": 4,
+    "clusterRows": 40,
+    "geoKeywords": 15,
+    "deliverables": 15
+  }
+}

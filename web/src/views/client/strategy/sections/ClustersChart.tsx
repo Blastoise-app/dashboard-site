@@ -1,12 +1,15 @@
 import { useEffect, useRef } from "react";
 import * as echarts from "echarts";
 import type { Clusters } from "@shared/types";
+import { useTheme } from "@/lib/theme";
 
 const CLUSTER_COLORS = ["--red", "--data-blue", "--data-purple"];
 
 export default function ClustersChart({ clusters }: { clusters: Clusters }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<echarts.ECharts | null>(null);
+  // Re-init when the theme flips so axis/tooltip colors track the new palette.
+  const { theme } = useTheme();
 
   useEffect(() => {
     const el = containerRef.current;
@@ -15,7 +18,9 @@ export default function ClustersChart({ clusters }: { clusters: Clusters }) {
     chartRef.current = chart;
 
     const colors = CLUSTER_COLORS.map((v) => cssVar(v));
-    const borderColor = "rgba(255,255,255,0.08)";
+    // Theme-aware gridline/border colors (V6 hardcodes warm-brown; we pull the
+    // edge token so dark mode stays legible).
+    const borderColor = cssVar("--edge-2") || "rgba(48,43,30,0.12)";
     const tickColor = cssVar("--ink-3");
     const bgTooltip = cssVar("--bg-card");
     const inkColor = cssVar("--ink-0");
@@ -94,7 +99,7 @@ export default function ClustersChart({ clusters }: { clusters: Clusters }) {
       tooltip: {
         trigger: "item",
         backgroundColor: bgTooltip,
-        borderColor: "rgba(255,255,255,0.12)",
+        borderColor: cssVar("--edge-2") || "rgba(48,43,30,0.14)",
         borderWidth: 0.5,
         textStyle: {
           color: inkColor,
@@ -102,11 +107,11 @@ export default function ClustersChart({ clusters }: { clusters: Clusters }) {
           fontSize: 13,
         },
         extraCssText:
-          "border-radius:10px;box-shadow:0 12px 40px rgba(0,0,0,0.5);padding:10px 14px;",
+          "border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,0.18);padding:10px 14px;",
         formatter: (p: { data: { display: { svDisplay: string; kd: number; cpcDisplay: string }; name: string } }) => {
           const d = p.data.display;
           return `
-            <div style="font-weight:600;margin-bottom:5px;color:#fff;font-family:Inter">${escapeHtml(p.data.name)}</div>
+            <div style="font-weight:600;margin-bottom:5px;color:${inkColor};font-family:Inter">${escapeHtml(p.data.name)}</div>
             <div style="color:${ink2};font-family:'JetBrains Mono';font-size:11.5px">
               SV ${d.svDisplay} · KD ${d.kd} · CPC ${d.cpcDisplay || "—"}
             </div>`;
@@ -123,7 +128,7 @@ export default function ClustersChart({ clusters }: { clusters: Clusters }) {
       chart.dispose();
       chartRef.current = null;
     };
-  }, [clusters]);
+  }, [clusters, theme]);
 
   return (
     <div className="chart-wrap">

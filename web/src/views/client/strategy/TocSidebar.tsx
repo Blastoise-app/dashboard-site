@@ -2,6 +2,7 @@ interface TocEntry {
   id: string;
   num: string;
   title: string;
+  engagementGated?: boolean;
 }
 
 interface Props {
@@ -19,13 +20,16 @@ export default function TocSidebar({ entries, activeId }: Props) {
             key={e.id}
             href={`#${e.id}`}
             data-id={e.id}
-            className={e.id === activeId ? "active" : undefined}
+            className={
+              [e.id === activeId ? "active" : "", e.engagementGated ? "engagement-gated" : ""]
+                .filter(Boolean)
+                .join(" ") || undefined
+            }
             onClick={(ev) => {
               ev.preventDefault();
               const target = document.getElementById(e.id);
               if (target) {
-                const top =
-                  target.getBoundingClientRect().top + window.scrollY - 76;
+                const top = target.getBoundingClientRect().top + window.scrollY - 76;
                 window.scrollTo({ top, behavior: "smooth" });
                 history.replaceState(null, "", `#${e.id}`);
               }

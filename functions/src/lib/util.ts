@@ -24,7 +24,13 @@ export function normalizeStatus(s: string | null | undefined): CoverageStatus {
   const l = String(s).toLowerCase();
   if (l.includes("not done")) return "notDone";
   if (l.includes("proposed") || l.includes("ready")) return "proposed";
-  if (l.includes("in progress") || l.includes("started") || l.includes("drafting")) return "inProgress";
+  if (
+    l.includes("in progress") ||
+    l.includes("started") ||
+    l.includes("drafting") ||
+    l.includes("reviewing")
+  )
+    return "inProgress";
   if (l.includes("done") || l.includes("complete") || l.includes("live") || l.includes("published")) return "done";
   return "notDone";
 }

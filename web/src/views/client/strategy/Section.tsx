@@ -5,11 +5,13 @@ interface Props {
   num: string;
   title: string;
   children: ReactNode;
+  className?: string;
 }
 
-export default function Section({ id, num, title, children }: Props) {
+export default function Section({ id, num, title, children, className }: Props) {
   return (
-    <section id={id} className="section">
+    <section id={id} className={"section" + (className ? " " + className : "")}>
+
       <div className="section-head">
         <span className="section-number">{num}</span>
         <h2 className="section-title">{title}</h2>

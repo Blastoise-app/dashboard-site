@@ -28,6 +28,15 @@ async function main() {
 
   const configPath = resolve(ROOT, 'clients', `${slug}.json`);
   const config = JSON.parse(await readFile(configPath, 'utf8'));
+
+  // Clients migrated to the Firestore ingest (syncSheetsScheduled) carry
+  // `tabTitles` instead of gid-based `tabs`. The legacy public-CSV path can't
+  // (and shouldn't) refresh them — skip cleanly so the multi-client loop in
+  // refresh-data.yml doesn't crash on a missing `config.tabs`.
+  if (config.tabTitles || !config.tabs) {
+    console.log(`[fetch] ${slug}: uses Firestore ingest (no gid tabs) — skipping legacy CSV refresh`);
+    return;
+  }
   console.log(`[fetch] client=${slug} sheet=${config.sheetId}`);
 
   const out = {

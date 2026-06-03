@@ -39,10 +39,32 @@ export interface ConnectionStatus {
   lastError?: string;
 }
 
+// Exact tab titles the ingest reads (by NAME, not gid). KPI spans two tabs.
+export interface SheetTabTitles {
+  roadmap: string;
+  geoTracker: string;
+  clusters: string;
+  kpiObjectives: string;
+  performanceProjections?: string;
+}
+
+// Per-client minimum-count baselines for the validate gate. A large shortfall
+// fails closed — catches a parser that captured only part of the data on an
+// unexpected layout (e.g. clusters parsed as 1 group instead of ~5). Stored on
+// the client's sheet config so it is multi-tenant-safe (not hardcoded in code).
+export interface SheetExpectMinimums {
+  clusterGroups?: number;
+  clusterRows?: number;
+  geoKeywords?: number;
+  deliverables?: number;
+}
+
 export interface SheetConnection extends ConnectionStatus {
   id: string;
   sheetTitle?: string;
   detectedTabs?: string[];
+  tabTitles?: SheetTabTitles;
+  expectMinimums?: SheetExpectMinimums;
 }
 
 export interface Ga4Connection extends ConnectionStatus {
@@ -61,6 +83,11 @@ export interface Client {
   slug: string;
   brand: Brand;
   allowedDomains: string[];
+  // Strategy-doc title/subtitle. They are presentation config (not in the sheet
+  // grid), so they live on the Client doc; the sync copies them onto each
+  // SheetSnapshot, and assembleStrategyDoc reads them back from the snapshot.
+  reportTitle?: string;
+  reportSubtitle?: string;
   dataSources: {
     sheet: SheetConnection;
     ga4: Ga4Connection;
@@ -150,8 +177,9 @@ export interface ClusterRow {
   svDisplay: string;
   sv: number;
   kd: number;
-  cpc: number;
-  cpcDisplay: string;
+  // CPC is optional — some client sheets (e.g. NeuralTrust) track only SV + KD.
+  cpc?: number;
+  cpcDisplay?: string;
 }
 
 export interface Clusters {
@@ -168,9 +196,13 @@ export interface GeoTrackerKeyword {
   keyword: string;
   svDisplay: string;
   sv: number;
-  cpcDisplay: string;
-  cpc: number;
+  // Optional — some client sheets (e.g. NeuralTrust) don't track CPC.
+  cpcDisplay?: string;
+  cpc?: number;
   coverage: Record<string, CoverageStatus>;
+  // Opaque stable id minted into the sheet's hidden _rowId column; the join key
+  // for review state. Absent until ensureRowIds has run against the sheet.
+  rowId?: string;
 }
 
 export interface GeoTracker {
@@ -188,6 +220,55 @@ export interface RoadmapDeliverable {
   searchVolume: string;
   status: CoverageStatus;
   statusRaw: string;
+  // Present on status-tracked roadmaps (e.g. NeuralTrust's live reporting tab).
+  // When any deliverable carries these, the timeline renders per-deliverable
+  // cards with status badges + links instead of grouping by type.
+  docLink?: string;
+  existingLink?: string;
+  asOf?: string;
+  // Opaque stable id minted into the sheet's hidden _rowId column; the join key
+  // for content-review state. Absent until ensureRowIds has run against the sheet.
+  rowId?: string;
+}
+
+// ---- KPI / reporting (temporary, pre-GA4/GSC-API) -----------------------
+
+export interface KpiObjective {
+  objective: string; // Business Objective (blank on continuation rows)
+  funnel: string; // Visibility | Traffic | Conversions + Revenue
+  kpi: string;
+  baseline: string;
+  date: string;
+  tool: string;
+}
+
+export interface KpiTarget {
+  kpi: string;
+  description: string;
+  baseline: string;
+  m3: string;
+  m6: string;
+  m12: string;
+  notes: string;
+}
+
+export interface KpiReport {
+  objectives: KpiObjective[];
+  targets: KpiTarget[];
+}
+
+// ---- Content review (drafts/outlines awaiting client sign-off) ----------
+
+export interface ContentReviewItem {
+  id: string;
+  title: string;
+  type: string; // roadmap deliverable type — drives accent color
+  kind: string; // Outline | Draft | Script | Snippet | Document
+  keyword?: string;
+  docUrl: string;
+  // Optional ISO (yyyy-mm-dd) date used to show a relative "due" pill.
+  dueBy?: string;
+  isNew?: boolean;
 }
 
 export interface Roadmap {
@@ -202,10 +283,17 @@ export interface Roadmap {
 // Strategy doc snapshot stored at /agencies/{a}/clients/{c}/sheetSnapshots/strategy.
 // Carries forward the data.json shape produced by scripts/lib/parse-*.mjs.
 export interface SheetSnapshot {
-  overview: Overview;
+  // Title + subtitle come from the sheet (assembled into StrategyDoc at read
+  // time alongside the Client doc's slug/brand).
+  title: string;
+  subtitle: string;
+  // Overview is optional — clients onboarded without a narrative tab (e.g.
+  // NeuralTrust) carry only the data sections below.
+  overview?: Overview;
   clusters: Clusters;
   geoTracker: GeoTracker;
   roadmap: Roadmap;
+  kpi?: KpiReport;
   syncedAt: Timestamp;
 }
 

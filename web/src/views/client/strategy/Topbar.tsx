@@ -1,7 +1,14 @@
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/auth/AuthProvider";
+import type { ClientListItem } from "@/lib/strategyDoc";
+import { useTheme } from "@/lib/theme";
+
 interface TopbarProps {
   brandName: string;
   title: string;
   lastUpdated: string;
+  slug: string;
+  clients?: ClientListItem[];
   onToggleToc: () => void;
 }
 
@@ -9,10 +16,20 @@ export default function Topbar({
   brandName,
   title,
   lastUpdated,
+  slug,
+  clients,
   onToggleToc,
 }: TopbarProps) {
-  const initials = computeInitials(brandName);
   const { label, stale } = renderUpdated(lastUpdated);
+  const { toggle: toggleTheme } = useTheme();
+  const navigate = useNavigate();
+  const { claims } = useAuth();
+
+  // Agency + platform admins can jump between clients; clients see only theirs.
+  // Options are supplied by ClientView (live from Firestore) and only fetched
+  // for switch-eligible roles, so gate on both the claim and the prop.
+  const canSwitch = claims?.role === "agency" || claims?.role === "platform_admin";
+  const switchClients = canSwitch ? (clients ?? []) : [];
 
   return (
     <header className="topbar">
@@ -34,29 +51,72 @@ export default function Topbar({
             </svg>
           </button>
           <span className="brand-logo">
-            <svg viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg">
-              <path d="M14 0 L2 18 H11 L9 32 L22 12 H13 Z" />
-            </svg>
-            {initials}
+            <img className="logo-light" src="/assets/gmp-monogram.png" alt={brandName} />
+            <img className="logo-dark" src="/assets/gmp-monogram-dark.png" alt={brandName} />
           </span>
           <span className="brand-title">{title}</span>
         </div>
-        <span className={"updated" + (stale ? " stale" : "")} title={lastUpdated}>
-          {label}
-        </span>
+
+        <div className="topbar-actions">
+          {switchClients.length > 1 && (
+            <select
+              className="client-switcher"
+              value={slug}
+              onChange={(e) => navigate(`/agency/clients/${e.target.value}`)}
+              aria-label="Switch client"
+            >
+              {switchClients.map((c) => (
+                <option key={c.slug} value={c.slug}>
+                  {shortName(c.title)}
+                </option>
+              ))}
+            </select>
+          )}
+          <span className={"updated" + (stale ? " stale" : "")} title={lastUpdated}>
+            {label}
+          </span>
+          <button
+            className="theme-toggle"
+            onClick={toggleTheme}
+            aria-label="Toggle light/dark theme"
+            title="Toggle light/dark theme"
+          >
+            <svg
+              className="icon-moon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+            <svg
+              className="icon-sun"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+            </svg>
+          </button>
+        </div>
       </div>
     </header>
   );
 }
 
-function computeInitials(name: string): string {
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 3)
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase();
+function shortName(title: string): string {
+  return title.split("—")[0].trim() || title;
 }
 
 function renderUpdated(iso: string): { label: string; stale: boolean } {

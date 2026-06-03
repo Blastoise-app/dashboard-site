@@ -1,6 +1,23 @@
-import type { Agency, Role } from "../../../shared/types.js";
+import type { Role } from "../../../shared/types.js";
 
 export const PLATFORM_ADMIN_EMAILS = ["thomas@blastoise.app"];
+
+// Hardcoded access allowlist. Adding/removing access is a one-file edit + a
+// `firebase deploy --only functions`. Replaces the old per-sign-in Firestore
+// lookup (scan `agencies`, collection-group query `clients`) so we no longer
+// have to hand-seed Firestore docs before someone can sign in.
+//
+// AGENCY_DOMAINS — agency users see ALL clients under their agency.
+export const AGENCY_DOMAINS: Record<string, string> = {
+  "growthmarketingpro.com": "gmp",
+};
+
+// CLIENT_DOMAINS — client company domain (or a specific email) → the client
+// record(s) they may see. Keys are matched case-insensitively against both the
+// email's domain and the full email. Fill in as real clients onboard.
+export const CLIENT_DOMAINS: Record<string, ClientMatch[]> = {
+  // "neuraltrust.ai": [{ agencyId: "gmp", clientId: "neuraltrust" }],
+};
 
 export function emailDomain(email: string): string {
   const at = email.lastIndexOf("@");
@@ -12,34 +29,31 @@ export function isPlatformAdminEmail(email: string): boolean {
   return PLATFORM_ADMIN_EMAILS.includes(email.toLowerCase());
 }
 
-export function matchAgencyByDomain(
-  email: string,
-  agencies: Array<Pick<Agency, "id" | "emailDomains">>,
-): { agencyId: string } | null {
-  const domain = emailDomain(email);
-  if (!domain) return null;
-  for (const a of agencies) {
-    if (a.emailDomains?.some((d) => d.toLowerCase() === domain)) {
-      return { agencyId: a.id };
-    }
-  }
-  return null;
-}
-
 export interface ClientMatch {
   agencyId: string;
   clientId: string;
 }
 
-export function matchClientsByDomain(
-  email: string,
-  clients: Array<{ id: string; agencyId: string; allowedDomains: string[] }>,
-): ClientMatch[] {
+export type AccessResolution =
+  | { role: "platform_admin" }
+  | { role: "agency"; agencyId: string }
+  | { role: "client"; clientRefs: ClientMatch[] };
+
+// Resolve a user's access from the hardcoded allowlist. Precedence:
+// platform admin → agency domain → client domain/email → null (reject).
+export function resolveAccess(email: string): AccessResolution | null {
+  if (isPlatformAdminEmail(email)) return { role: "platform_admin" };
+
   const domain = emailDomain(email);
-  if (!domain) return [];
-  return clients
-    .filter((c) => c.allowedDomains?.some((d) => d.toLowerCase() === domain))
-    .map((c) => ({ agencyId: c.agencyId, clientId: c.id }));
+  if (!domain) return null;
+
+  const agencyId = AGENCY_DOMAINS[domain];
+  if (agencyId) return { role: "agency", agencyId };
+
+  const clientRefs = CLIENT_DOMAINS[domain] ?? CLIENT_DOMAINS[email.toLowerCase()];
+  if (clientRefs && clientRefs.length > 0) return { role: "client", clientRefs };
+
+  return null;
 }
 
 // Custom claims emitted into the Firebase auth token. Security rules read these.

@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import type { StrategyDoc } from "@/lib/fixtures";
+import type { ClientListItem } from "@/lib/strategyDoc";
+import { deriveContentReview } from "@/lib/contentReview";
 import Topbar from "./Topbar";
 import TocSidebar from "./TocSidebar";
 import Hero from "./Hero";
@@ -12,18 +14,27 @@ import ClustersTables from "./sections/ClustersTables";
 import GeoMatrix from "./sections/GeoMatrix";
 import CreditsTable from "./sections/CreditsTable";
 import RoadmapTimeline from "./sections/RoadmapTimeline";
-import NavGrid from "./sections/NavGrid";
-import StrategyFooter from "./sections/StrategyFooter";
+import ReportingSection from "./sections/ReportingSection";
+import ContentReview from "./sections/ContentReview";
+import FinalCta from "./sections/FinalCta";
 
 interface SectionDef {
   id: string;
   num: string;
   title: string;
+  gated?: boolean;
   render: () => ReactNode;
 }
 
-export default function StrategyView({ doc }: { doc: StrategyDoc }) {
+export default function StrategyView({
+  doc,
+  clients,
+}: {
+  doc: StrategyDoc;
+  clients?: ClientListItem[];
+}) {
   const sections = useMemo(() => buildSections(doc), [doc]);
+
   const [tocHidden, setTocHidden] = useState(() => {
     if (typeof window === "undefined") return false;
     return localStorage.getItem("tocHidden") === "1";
@@ -56,22 +67,27 @@ export default function StrategyView({ doc }: { doc: StrategyDoc }) {
     return () => observer.disconnect();
   }, [sections]);
 
+  const rootClass = tocHidden ? "toc-hidden" : "";
+
   return (
-    <div
-      ref={containerRef}
-      className={tocHidden ? "toc-hidden" : undefined}
-      data-strategy-root
-    >
+    <div ref={containerRef} className={rootClass || undefined} data-strategy-root>
       <Topbar
         brandName={doc.brand.name}
         title={doc.title}
         lastUpdated={doc.lastUpdated}
+        slug={doc.slug}
+        clients={clients}
         onToggleToc={() => setTocHidden((v) => !v)}
       />
       <div className="layout">
         {!tocHidden && (
           <TocSidebar
-            entries={sections.map(({ id, num, title }) => ({ id, num, title }))}
+            entries={sections.map(({ id, num, title, gated }) => ({
+              id,
+              num,
+              title,
+              engagementGated: gated,
+            }))}
             activeId={activeId}
           />
         )}
@@ -80,13 +96,20 @@ export default function StrategyView({ doc }: { doc: StrategyDoc }) {
             title={doc.title}
             subtitle={doc.subtitle}
             eyebrow={`Strategy Brief · ${formatDateMonth(doc.lastUpdated)}`}
+            sections={sections.map(({ id, title }) => ({ id, title }))}
           />
           {sections.map((s) => (
-            <Section key={s.id} id={s.id} num={s.num} title={s.title}>
+            <Section
+              key={s.id}
+              id={s.id}
+              num={s.num}
+              title={s.title}
+              className={s.gated ? "engagement-gated" : undefined}
+            >
               {s.render()}
             </Section>
           ))}
-          <StrategyFooter text={doc.overview.footer} />
+          <FinalCta clientName={shortName(doc.title)} />
         </main>
       </div>
     </div>
@@ -96,143 +119,110 @@ export default function StrategyView({ doc }: { doc: StrategyDoc }) {
 function buildSections(doc: StrategyDoc): SectionDef[] {
   const list: SectionDef[] = [];
   let n = 0;
-  const next = () => String(++n).padStart(2, "0");
-  const byTitle = (re: RegExp) =>
-    doc.overview.sections.find((s) => re.test(s.title));
+  const overviewSections = doc.overview?.sections ?? [];
+  const byTitle = (re: RegExp) => overviewSections.find((s) => re.test(s.title));
   const byKind = <K extends string>(kind: K) =>
-    doc.overview.sections.find((s) => s.kind === kind);
+    overviewSections.find((s) => s.kind === kind);
+
+  const push = (
+    title: string,
+    render: () => ReactNode,
+    opts: { gated?: boolean } = {},
+  ) => {
+    const num = String(++n).padStart(2, "0");
+    list.push({ id: `sec-${num}`, num, title, render, gated: opts.gated });
+  };
 
   const opportunity = byTitle(/THE OPPORTUNITY/i);
   if (opportunity && opportunity.kind === "prose") {
-    const id = `sec-${next()}`;
-    list.push({
-      id,
-      num: id.slice(4),
-      title: "The Opportunity",
-      render: () => <ProseSection body={opportunity.body} />,
-    });
+    push("The Opportunity", () => <ProseSection body={opportunity.body} />);
   }
 
   const approach = byKind("approach");
   if (approach && approach.kind === "approach") {
-    const id = `sec-${next()}`;
-    list.push({
-      id,
-      num: id.slice(4),
-      title: "Our Approach",
-      render: () => <ApproachGrid intro={approach.intro} bullets={approach.bullets} />,
-    });
+    push("Our Approach", () => (
+      <ApproachGrid intro={approach.intro} bullets={approach.bullets} />
+    ));
   }
 
   if (doc.clusters?.groups?.length) {
-    const id = `sec-${next()}`;
-    list.push({
-      id,
-      num: id.slice(4),
-      title: "Keyword Universe",
-      render: () => (
-        <>
-          <p className="section-intro">
-            Every buyer keyword across the image, logo, and creative clusters —
-            plotted by difficulty vs. search volume. Bigger, lower-left means easier
-            to rank with larger payoff.
-          </p>
-          <ClustersChart clusters={doc.clusters} />
-        </>
-      ),
-    });
-  }
-
-  if (doc.clusters?.groups?.length) {
-    const id = `sec-${next()}`;
-    list.push({
-      id,
-      num: id.slice(4),
-      title: "Keyword Clusters",
-      render: () => (
-        <>
-          <p className="section-intro">
-            Full keyword universe grouped into three clusters, sorted by search
-            volume. KD pills flag keywords by how hard they are to rank.
-          </p>
-          <ClustersTables clusters={doc.clusters} />
-        </>
-      ),
-    });
-  }
-
-  const strategic = byTitle(/STRATEGIC ALLOCATION/i);
-  if (strategic && strategic.kind === "prose") {
-    const id = `sec-${next()}`;
-    list.push({
-      id,
-      num: id.slice(4),
-      title: "Strategic Allocation",
-      render: () => <ProseSection body={strategic.body} />,
-    });
+    push("Keyword Universe", () => (
+      <>
+        <p className="section-intro">
+          Every target keyword plotted by difficulty vs. search volume. Bigger, lower-left
+          means easier to rank with larger payoff.
+        </p>
+        <ClustersChart clusters={doc.clusters} />
+      </>
+    ));
+    push("Keyword Clusters", () => (
+      <>
+        <p className="section-intro">
+          Full keyword universe grouped into clusters, sorted by search volume. KD pills flag
+          keywords by how hard they are to rank.
+        </p>
+        <ClustersTables clusters={doc.clusters} />
+      </>
+    ));
   }
 
   if (doc.geoTracker?.keywords?.length) {
-    const id = `sec-${next()}`;
-    list.push({
-      id,
-      num: id.slice(4),
-      title: "Keyword Tracker",
-      render: () => (
-        <>
-          <p className="section-intro">
-            Top 10 priority keywords × 9 grouped SEO and GEO levers. Every cell
-            shows whether we plan to activate that surface for that keyword — the
-            at-a-glance picture of where Ideogram will show up.
-          </p>
-          <GeoMatrix geo={doc.geoTracker} />
-        </>
-      ),
-    });
+    push("Keyword Tracker", () => (
+      <>
+        <p className="section-intro">
+          Priority keywords × grouped SEO and GEO levers. Every cell shows whether we plan to
+          activate that surface for that keyword — the at-a-glance picture of where you'll show
+          up across search + AI.
+        </p>
+        <GeoMatrix geo={doc.geoTracker} />
+      </>
+    ));
+  }
+
+  if (doc.roadmap?.months?.length) {
+    push("Monthly Roadmap", () => (
+      <>
+        <p className="section-intro">
+          Every deliverable across the engagement, month by month — with credit cost, target
+          keyword, and current production status.
+        </p>
+        <RoadmapTimeline roadmap={doc.roadmap} />
+      </>
+    ));
+  }
+
+  // Content review — drafts/outlines awaiting sign-off (engagement-gated).
+  const crItems = doc.contentReview ?? deriveContentReview(doc.roadmap);
+  push(
+    "Content Review",
+    () => (
+      <ContentReview
+        items={crItems}
+        today={doc.lastUpdated}
+        storageKey={`cr-content-review-v1:${doc.slug}`}
+      />
+    ),
+    { gated: true },
+  );
+
+  // Temporary KPI reporting (engagement-gated).
+  if (doc.kpi) {
+    const kpi = doc.kpi;
+    push("Reporting", () => <ReportingSection kpi={kpi} />, { gated: true });
   }
 
   const credits = byKind("creditSystem");
   if (credits && credits.kind === "creditSystem") {
-    const id = `sec-${next()}`;
-    list.push({
-      id,
-      num: id.slice(4),
-      title: "The Credit System",
-      render: () => <CreditsTable intro={credits.intro} rows={credits.rows} />,
-    });
-  }
-
-  if (doc.roadmap?.months?.length) {
-    const id = `sec-${next()}`;
-    list.push({
-      id,
-      num: id.slice(4),
-      title: "Monthly Roadmap",
-      render: () => (
-        <>
-          <p className="section-intro">
-            Every deliverable across the three-month engagement, grouped by type.
-            Each milestone shows the count, credit cost, and which keywords it
-            covers.
-          </p>
-          <RoadmapTimeline roadmap={doc.roadmap} />
-        </>
-      ),
-    });
-  }
-
-  const nav = byKind("navigation");
-  if (nav && nav.kind === "navigation" && nav.items.length) {
-    const id = `sec-${next()}`;
-    list.push({
-      id,
-      num: id.slice(4),
-      title: "How to Navigate",
-      render: () => <NavGrid items={nav.items} />,
-    });
+    push("The Credit System", () => (
+      <CreditsTable intro={credits.intro} rows={credits.rows} />
+    ));
   }
 
   return list;
+}
+
+function shortName(title: string): string {
+  return title.split("—")[0].trim() || title;
 }
 
 function formatDateMonth(iso: string): string {

@@ -32,7 +32,7 @@ export const router = createBrowserRouter([
       {
         path: "agency/clients/:slug",
         element: (
-          <RouteGuard requireRole={["agency", "platform_admin", "client"]}>
+          <RouteGuard requireRole={["agency", "platform_admin", "client"]} restrictClientToOwn>
             <ClientView />
           </RouteGuard>
         ),

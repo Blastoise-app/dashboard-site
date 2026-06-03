@@ -9,6 +9,10 @@ node_modules/
 secrets/
 *.pem
 *.key
+functions/.secret.local
+*.secret.local
+**/service-account*.json
+key.json
 
 # Build output
 dist/
@@ -20,3 +24,7 @@ functions/lib/
 .env
 .env.local
 .env.*.local
+
+# Local design scratch / source material — not part of the deployable app
+Client Strategy Microsites/
+Strategy Microsite v*.html

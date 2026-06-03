@@ -1,68 +1,74 @@
-import { useState } from "react";
+import type { ReactNode } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getFixture } from "@/lib/fixtures";
+import { useAuth } from "@/auth/AuthProvider";
+import { useClientStrategy, useAgencyClients, resolveAgencyId } from "@/lib/useClientStrategy";
 import StrategyView from "./strategy/StrategyView";
-import PerformanceView from "./performance/PerformanceView";
 
-type Tab = "strategy" | "performance";
-
+// Single-scroll client microsite, rendered live from Firestore. Everything
+// (strategy, roadmap, reporting, content review) is a section in one scrolling
+// page with the TOC sidebar — no tabs. The agency/admin client switcher lives in
+// the Topbar; its options come from the agency-clients listener (only opened for
+// agency/admin, whose rules permit the collection list query).
 export default function ClientView() {
   const { slug = "" } = useParams();
-  const doc = getFixture(slug);
-  const [tab, setTab] = useState<Tab>("strategy");
+  const { claims } = useAuth();
+  const agencyId = resolveAgencyId(claims, slug);
 
-  if (!doc) {
+  const { doc, loading, error, notFound, snapshotMissing } = useClientStrategy(agencyId, slug);
+
+  const canSwitch = claims?.role === "agency" || claims?.role === "platform_admin";
+  const { clients } = useAgencyClients(canSwitch ? agencyId : undefined);
+
+  if (loading) {
+    return <Centered>Loading…</Centered>;
+  }
+
+  if (error) {
     return (
-      <div className="min-h-screen grid place-items-center bg-[var(--bg-page)] text-[var(--ink-2)]">
-        <div className="text-center">
-          <p className="mb-4">Client not found: {slug}</p>
-          <Link to="/agency" className="text-[var(--red)] underline">
-            Back to clients
-          </Link>
-        </div>
-      </div>
+      <Centered>
+        <p className="mb-4">
+          {error.code === "permission-denied"
+            ? "You don't have access to this client."
+            : `Couldn't load this client (${error.code}).`}
+        </p>
+        <BackLink />
+      </Centered>
     );
   }
 
+  if (notFound) {
+    return (
+      <Centered>
+        <p className="mb-4">Client not found: {slug}</p>
+        <BackLink />
+      </Centered>
+    );
+  }
+
+  if (snapshotMissing || !doc) {
+    return (
+      <Centered>
+        <p className="mb-4">No data has synced yet for {slug}. Check back after the next sync.</p>
+        <BackLink />
+      </Centered>
+    );
+  }
+
+  return <StrategyView doc={doc} clients={clients} />;
+}
+
+function Centered({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-[var(--bg-page)]">
-      <Tabs current={tab} onChange={setTab} />
-      {tab === "strategy" ? (
-        <StrategyView doc={doc} />
-      ) : (
-        <PerformanceView doc={doc} />
-      )}
+    <div className="min-h-screen grid place-items-center bg-[var(--bg-page)] text-[var(--ink-2)]">
+      <div className="text-center">{children}</div>
     </div>
   );
 }
 
-function Tabs({
-  current,
-  onChange,
-}: {
-  current: Tab;
-  onChange: (t: Tab) => void;
-}) {
-  const items: Array<{ id: Tab; label: string }> = [
-    { id: "strategy", label: "Strategy" },
-    { id: "performance", label: "Performance" },
-  ];
+function BackLink() {
   return (
-    <div className="sticky top-0 z-[60] flex justify-center gap-1 border-b border-[var(--edge-1)] bg-[var(--bg-page)]/85 backdrop-blur">
-      {items.map((item) => (
-        <button
-          key={item.id}
-          onClick={() => onChange(item.id)}
-          className={
-            "px-5 py-3 text-sm font-medium font-[var(--font-sans)] border-b-2 -mb-px transition-colors " +
-            (current === item.id
-              ? "text-[var(--ink-0)] border-[var(--red)]"
-              : "text-[var(--ink-2)] border-transparent hover:text-[var(--ink-0)]")
-          }
-        >
-          {item.label}
-        </button>
-      ))}
-    </div>
+    <Link to="/agency" className="text-[var(--red)] underline">
+      Back to clients
+    </Link>
   );
 }

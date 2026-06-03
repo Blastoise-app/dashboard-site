@@ -1,39 +1,55 @@
+interface SectionRef {
+  id: string;
+  title: string;
+}
+
 interface Props {
   title: string;
   subtitle: string;
   eyebrow: string;
+  sections?: SectionRef[];
 }
 
+// V6's three crisp GMP bolts, anchored to the right gutter. Hidden by default
+// (.hero-bolts { display: none }) — kept for parity / future enablement.
 const BOLT_POSITIONS = [
-  { x: "14%", y: "12%", size: 22, rot: 12 },
-  { x: "38%", y: "6%", size: 18, rot: -18 },
-  { x: "62%", y: "18%", size: 26, rot: 8 },
-  { x: "82%", y: "8%", size: 20, rot: -10 },
-  { x: "92%", y: "44%", size: 16, rot: 20 },
-  { x: "72%", y: "70%", size: 24, rot: -12 },
-  { x: "48%", y: "82%", size: 18, rot: 14 },
-  { x: "22%", y: "66%", size: 20, rot: -16 },
-  { x: "4%", y: "46%", size: 22, rot: 10 },
+  { right: "20%", top: "14%" },
+  { right: "30%", top: "48%" },
+  { right: "22%", top: "80%" },
 ] as const;
+const BOLT_SIZE = 36;
+const BOLT_ROT = 14;
+const BOLT_PATH = "M13 0 L0 18 H9 L7 32 L22 12 H12 L13 0 Z";
 
-export default function Hero({ title, subtitle, eyebrow }: Props) {
+export default function Hero({ title, subtitle, eyebrow, sections = [] }: Props) {
+  const roadmap = sections.find((s) => /roadmap/i.test(s.title));
+  const credits = sections.find((s) => /credit/i.test(s.title));
+
+  const scrollTo = (id: string) => {
+    const target = document.getElementById(id);
+    if (!target) return;
+    const top = target.getBoundingClientRect().top + window.scrollY - 76;
+    window.scrollTo({ top, behavior: "smooth" });
+    history.replaceState(null, "", `#${id}`);
+  };
+
   return (
     <div className="hero">
       <div className="hero-bolts" aria-hidden="true">
         {BOLT_POSITIONS.map((p, i) => (
           <svg
             key={i}
-            viewBox="0 0 24 32"
+            viewBox="0 0 22 32"
             xmlns="http://www.w3.org/2000/svg"
             style={{
-              left: p.x,
-              top: p.y,
-              width: p.size + "px",
-              height: p.size * 1.3 + "px",
-              transform: `rotate(${p.rot}deg)`,
+              right: p.right,
+              top: p.top,
+              width: BOLT_SIZE + "px",
+              height: (BOLT_SIZE * 32) / 22 + "px",
+              transform: `rotate(${BOLT_ROT}deg)`,
             }}
           >
-            <path d="M14 0 L2 18 H11 L9 32 L22 12 H13 Z" />
+            <path d={BOLT_PATH} />
           </svg>
         ))}
       </div>
@@ -41,6 +57,42 @@ export default function Hero({ title, subtitle, eyebrow }: Props) {
         <span className="eyebrow">{eyebrow}</span>
         <Headline title={title} />
         <p className="subtitle">{subtitle}</p>
+        {(roadmap || credits) && (
+          <div className="hero-cta-row">
+            {roadmap && (
+              <button
+                type="button"
+                className="hero-cta hero-cta-primary"
+                onClick={() => scrollTo(roadmap.id)}
+              >
+                <span className="hero-cta-arrow">
+                  <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path
+                      d="M3.75 10h11m0 0L10 5.25M14.75 10 10 14.75"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+                <span>Review the Roadmap</span>
+              </button>
+            )}
+            {credits && (
+              <button
+                type="button"
+                className="hero-cta hero-cta-secondary"
+                onClick={() => scrollTo(credits.id)}
+              >
+                How credits work
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+      <div className="hero-mark">
+        <img src="/assets/gmp-brandmark.gif" alt="Growth Marketing Pro" />
       </div>
     </div>
   );

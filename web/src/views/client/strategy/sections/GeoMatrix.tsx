@@ -49,7 +49,17 @@ const STATUS_RANK: Record<CoverageStatus, number> = {
 const RANK_STATUS: CoverageStatus[] = ["notDone", "proposed", "inProgress", "done"];
 const KEYWORD_LIMIT = 10;
 
+// Lever ids the legacy (Ideogram) collapse knows how to merge.
+const LEGACY_LEVER_IDS = new Set(LEVER_GROUPS.flatMap((g) => g.members));
+
 export default function GeoMatrix({ geo }: { geo: GeoTracker }) {
+  // Ideogram ships 14 raw levers collapsed into the 9 LEVER_GROUPS above. Other
+  // clients (e.g. NeuralTrust) define their own levers directly — render those
+  // one column each instead of force-fitting the Ideogram grouping.
+  const isLegacy =
+    geo.levers.length > 0 && geo.levers.every((l) => LEGACY_LEVER_IDS.has(l.id));
+  if (!isLegacy) return <GenericMatrix geo={geo} />;
+
   const topKeywords = geo.keywords.slice(0, KEYWORD_LIMIT);
 
   return (
@@ -93,10 +103,10 @@ export default function GeoMatrix({ geo }: { geo: GeoTracker }) {
       <div className="matrix-legend">
         {(
           [
-            ["done", "Live"],
+            ["proposed", "Proposed"],
             ["inProgress", "In Progress"],
-            ["proposed", "Planned"],
-            ["notDone", "Not Done"],
+            ["done", "Live"],
+            ["notDone", "Not in plan"],
           ] as const
         ).map(([k, label]) => (
           <span className="leg" key={k}>
@@ -135,4 +145,88 @@ function mergedStatus(
     if (r > best) best = r;
   }
   return RANK_STATUS[best];
+}
+
+// Renders one column per lever defined on the doc, grouped by SEO/GEO. Used for
+// clients whose levers don't match the Ideogram collapse (e.g. NeuralTrust).
+function GenericMatrix({ geo }: { geo: GeoTracker }) {
+  const seo = geo.levers.filter((l) => l.group === "SEO");
+  const others = geo.levers.filter((l) => l.group !== "SEO");
+  const ordered = [...seo, ...others];
+
+  return (
+    <div className="matrix-wrap">
+      <div className="matrix-scroll">
+        <table className="matrix">
+          <thead>
+            {(seo.length > 0 || others.length > 0) && (
+              <tr>
+                <th className="kw-col" />
+                <th className="sv-col" />
+                {seo.length > 0 && (
+                  <th className="lever" colSpan={seo.length}>
+                    SEO
+                  </th>
+                )}
+                {others.length > 0 && (
+                  <th className="lever" colSpan={others.length}>
+                    GEO
+                  </th>
+                )}
+              </tr>
+            )}
+            <tr>
+              <th className="kw-col">Keyword / Prompt</th>
+              <th className="sv-col">SV</th>
+              {ordered.map((l) => (
+                <th key={l.id} className="lever">
+                  {l.label}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {geo.keywords.map((kw) => (
+              <tr key={kw.keyword}>
+                <td className="kw-col">
+                  <span className="kw-name">{kw.keyword}</span>
+                </td>
+                <td className="sv-col">{kw.svDisplay || "—"}</td>
+                {ordered.map((l) => {
+                  const status = kw.coverage[l.id] ?? "notDone";
+                  return (
+                    <td key={l.id}>
+                      <span
+                        className={`dot ${status}`}
+                        title={`${l.label} — ${statusLabel(status)}`}
+                      />
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="matrix-legend">
+        {(
+          [
+            ["proposed", "Proposed"],
+            ["inProgress", "In Progress"],
+            ["done", "Live"],
+            ["notDone", "Not in plan"],
+          ] as const
+        ).map(([k, label]) => (
+          <span className="leg" key={k}>
+            <span className={`dot ${k}`} />
+            {label}
+          </span>
+        ))}
+        <span className="note">
+          For each keyword we track every lever until your bases are covered
+          across search + AI.
+        </span>
+      </div>
+    </div>
+  );
 }
