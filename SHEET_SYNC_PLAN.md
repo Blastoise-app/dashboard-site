@@ -593,6 +593,23 @@ Not built in v1.
 
 ---
 
+## NEXT UP — UX / polish backlog (opened 2026-06-03, from live testing)
+
+These are post-Phase-3 polish items surfaced while Thomas tested the deployed app. They are
+independent of the sheet-sync phases above.
+
+| # | Item | Status | Detail |
+|---|---|---|---|
+| U1 | **Navigation dead-ends** | ⏳ in progress | The app shell (`web/src/views/AppShell.tsx`) is a bare `<Outlet/>` — **no persistent nav, no sign-out, no home link** on `/agency` or `/admin`. The `/admin` stub in particular strands you on an empty page. **Now:** add a "View client dashboards →" link on the `AdminHome` stub so it's not a dead-end. **Follow-up (bigger):** a shared authed header (home link + sign-out) across `AgencyHome`/`AdminHome`/client views, so no authed screen is a dead-end. |
+| U2 | **Dark-mode brandmark** | ⏳ in progress | The spinning GMP brandmark in the client hero (`web/src/views/client/strategy/Hero.tsx` → `.hero-mark img`, the `gmp-brandmark.gif`) stays dark in dark mode and disappears against the dark bg. Make it render **white in dark mode** (CSS `filter` in `strategy.css`, mirroring the existing `.logo-light`/`.logo-dark` dark-mode pattern). |
+| U3 | **Agency client-picker readability** | ⏳ in progress | `AgencyHome` (`/agency`, the GMP "pick a client" view) has cramped/awkward spacing — hard to read. Clean up spacing, type hierarchy, and card rhythm. *(May need a screenshot to fine-tune.)* |
+| U4 | Optimize 12MB hero GIF | not started | `web/public/assets/gmp-brandmark.gif` is 12MB (now in git history) — convert to optimized GIF/WebM/video; heavy on every page load. |
+| U5 | Human sign-in matrix | not started | Walk the real `@neuraltrust.ai` sign-in end-to-end (client landing, cross-slug 403, unlisted rejection) — can't be automated. |
+| U6 | Delete legacy CSV path | not started | `refresh-data.yml`, `scripts/build-neuraltrust.mjs`, `docs/neuraltrust/data.json` — superseded by the live sync; safe to remove. |
+| U7 | Cross-agency admin resolution | not started | `resolveAgencyId` hardcodes `gmp` for platform_admin; needs real agency selection when a 2nd agency lands. |
+
+---
+
 ## Decisions Thomas must make
 
 1. **SA access level — DECIDED: Editor + keyless.** Minting `_rowId` (and the review write-back)
