@@ -472,6 +472,17 @@ longer import `getFixture`/`listFixtures` for rendering.
 
 ### Phase 3 — Enable first client sign-in
 
+> **✅ COMPLETE + DEPLOYED (`30d9bab`, 2026-06-03).**
+> `neuraltrust.ai` is enabled in `CLIENT_DOMAINS` (whole domain). A 6-dimension adversarial
+> isolation review returned `safeToShip=true` / 0 blockers / **no isolation breach**, but flagged
+> 2 high-severity go-live *lockouts* (a legit client 403'd onto `/agency` via the `/` index
+> redirect, the `from` replay, and ClientView's BackLink). All fixed (shared `roleHome`/`canAccess`,
+> role-aware `HomeRedirect`, `from`-sanitization, client-hidden BackLink) + a low blocking-trigger
+> hardening (best-effort `/users/{uid}` write). Builds + 20 parser tests green. Deployed
+> `functions,hosting` (`beforeCreateUser` + `syncSheetsScheduled` updated, hosting released);
+> smoke-check green. **Only open item is human:** walk the real sign-in matrix with an actual
+> @neuraltrust.ai account (landings + cross-slug 403) — not automatable.
+
 **Goal.** Let a real client domain sign in, route-restricted to its own slug.
 
 **File changes.**
@@ -576,7 +587,7 @@ Not built in v1.
 | Phase 0 — Ingest core (sheets client, header parsers, rowId mint, snapshot+validate) | **Done** | SA + keyless auth + APIs; parser lib + 20 tests green + tsc clean; **live read PROVEN** (5 groups/53 rows, 20 geo, 19 deliverables, 11 kpi). `_rowId` first real write **DONE on GEO** (20 ids, hidden col L, idempotent); roadmap read-only (IMPORTRANGE mirror) |
 | Phase 1 — Scheduled function, Firestore config, seedClient, retire CSV path | **✅ COMPLETE + PROVEN (2026-06-02)** | `syncSheetsScheduled` live (hourly, Node 22, as SA); reworked to roadmap-read-only / GEO-only `_rowId`; first GEO write done + idempotent; Firestore snapshot **healthy** (`checkSync`: 20/20 geo rowIds, all sections); TOCTOU fix + `ignoreUndefinedProperties` retained; client seeded; SA grants self-`TokenCreator` + `datastore.user`. **No Hailey protection change needed.** Legacy CSV path **guarded, not yet deleted** (safe to delete now) |
 | Phase 2 — SPA reads Firestore live | **✅ COMPLETE + DEPLOYED (2026-06-02)** | `strategyDoc.ts` (`assembleStrategyDoc`/`tsToIso`/paths) + `useClientStrategy.ts` (`onSnapshot` both docs, both-seen gate, `notFound`/`snapshotMissing`/`error`, `useAgencyClients`, `resolveAgencyId`); `ClientView`/`AgencyHome`/`StrategyView`/`Topbar` read live (switcher via `clients` prop, `canSwitch` gating preserved; **client role never opens the clients-list listener** — rules forbid it); `fixtures.ts` demoted to dev-seed-only (tree-shaken out of bundle). `seedClientFromFixture.ts` created; **ideogram seeded** (sheet-less). Both clients read back complete (`verifyPhase2.ts`). 6-dim adversarial review: 4 findings (all medium/low, **0 isolation/leak blockers**) all fixed. Builds green; **hosting deployed** (`marketing-dashboard-site.web.app`, root+deep-link 200). No rules/env change. |
-| Phase 3 — Enable first `CLIENT_DOMAIN` | Not started | Confirm verified corporate domain |
+| Phase 3 — Enable first `CLIENT_DOMAIN` | **✅ COMPLETE + DEPLOYED (2026-06-03)** | `neuraltrust.ai` enabled in `CLIENT_DOMAINS` (whole domain → `gmp/neuraltrust`, route-restricted). 6-dim adversarial isolation review: **`safeToShip=true`, 0 blockers, NO isolation breach** — a neuraltrust user provably reads only `gmp/neuraltrust`. Review also caught **2 high-severity go-live LOCKOUTS** (not breaches): the `/` index redirect, the `from` replay, and ClientView's BackLink all hardcoded `/agency` → 403'd a legit client. **Fixed** via shared `roleHome`/`canAccess` (`web/src/auth/roleHome.ts`), role-aware `HomeRedirect`, `from`-sanitization in SignIn, client-hidden BackLink. Plus low fix: blocking trigger writes `/users/{uid}` best-effort (claims built first) so a transient Firestore failure can't lock out a valid sign-in. Commit `30d9bab`. **Deployed** `functions,hosting` → `beforeCreateUser` + `syncSheetsScheduled` updated, hosting released; smoke-check green (root/signin/deep-link 200, served bundle matches build). **Open (human-only): walk the real sign-in matrix** with an actual @neuraltrust.ai Google account (admin/agency/client/unlisted landings + cross-slug 403) — can't be automated. |
 | Phase 4 — `markReviewed` callable + ContentReview off localStorage | Not started | Deploy rules first; **sheet review mirror DROPPED** (roadmap is read-only IMPORTRANGE → review state Firestore-only); roadmap review keys off **natural key** not `_rowId` (redesign); coordinate `buildSections` w/ Phase 2 |
 | Phase 5 — Graduate off Sheets | Not started | Optional / deferred |
 
