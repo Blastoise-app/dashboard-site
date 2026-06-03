@@ -424,36 +424,33 @@ body.toc-hidden .toc-sidebar,
   align-items: center;
   justify-content: center;
 }
-.hero-mark .brandmark {
+.hero-mark img:not(.hero-bolt-overlay) {
   width: 100%;
   height: auto;
   display: block;
-  overflow: visible;
   filter: drop-shadow(0 18px 40px rgba(48, 43, 30, 0.12));
 }
-/* The ring text is theme-colored (dark on light, cream on dark) via --ink-0;
-   the bolt stroke stays red (var(--red), set inline) in both modes. */
-.brandmark-ring text {
-  fill: var(--ink-0);
-  font-family: var(--font-sans);
-  font-weight: 800;
-  font-size: 18px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
+html[data-theme="dark"] .hero-mark img:not(.hero-bolt-overlay) {
+  /* The brandmark GIF is dark artwork, so it vanishes on the dark page. Flatten
+     it to a white silhouette in dark mode (animation is preserved through the
+     filter). Mirrors the .logo-light/.logo-dark swap used in the topbar. */
+  filter: brightness(0) invert(1) drop-shadow(0 18px 40px rgba(0, 0, 0, 0.5));
 }
-.brandmark-ring {
-  transform-box: view-box;
-  transform-origin: 100px 100px;
-  animation: gmp-brandmark-spin 30s linear infinite;
-}
-@keyframes gmp-brandmark-spin {
-  to { transform: rotate(360deg); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .brandmark-ring { animation: none; }
-}
-html[data-theme="dark"] .hero-mark .brandmark {
-  filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.5));
+/* Light mode: GIF already shows a red bolt, so the overlay stays hidden. Dark
+   mode: the GIF (incl. its bolt) is flattened white above — overlay the original
+   bolt, cut from the same artwork, back in red, aligned to the GIF's static
+   centered bolt. Sizes/positions are fractions of the square mark, so it scales
+   responsively. */
+.hero-bolt-overlay { display: none; }
+html[data-theme="dark"] .hero-bolt-overlay {
+  display: block;
+  position: absolute;
+  left: 49.95%;
+  top: 50%;
+  width: 28.8%;
+  height: auto;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 @media (max-width: 980px) {
   .hero-mark { flex-basis: 188px; }

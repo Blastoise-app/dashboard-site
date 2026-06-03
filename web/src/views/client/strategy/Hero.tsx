@@ -92,51 +92,16 @@ export default function Hero({ title, subtitle, eyebrow, sections = [] }: Props)
         )}
       </div>
       <div className="hero-mark">
-        {/* Inline SVG brandmark (replaces a 12MB GIF). The ring spins and is
-            theme-colored via var(--ink-0); the bolt stays red (var(--red)) in
-            both light and dark mode. */}
-        <svg
-          className="brandmark"
-          viewBox="0 0 200 200"
-          role="img"
-          aria-label="Growth Marketing Pro"
-        >
-          <defs>
-            <path
-              id="gmp-ring-path"
-              d="M 100,100 m -76,0 a 76,76 0 1,1 152,0 a 76,76 0 1,1 -152,0"
-            />
-          </defs>
-          <g className="brandmark-ring">
-            <text>
-              <textPath
-                href="#gmp-ring-path"
-                startOffset="0"
-                textLength="477"
-                lengthAdjust="spacing"
-              >
-                GROWTH · MARKETING · PRO ·{" "}
-              </textPath>
-            </text>
-          </g>
-          <svg
-            x="62"
-            y="50"
-            width="76"
-            height="100"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              d="M13.6 2 L5 13.4 L10.6 13.4 L9.2 22 L18.4 9.6 L12.9 9.6 Z"
-              fill="none"
-              stroke="var(--red)"
-              strokeWidth="1.5"
-              strokeLinejoin="round"
-              strokeLinecap="round"
-            />
-          </svg>
-        </svg>
+        <img src="/assets/gmp-brandmark.gif" alt="Growth Marketing Pro" />
+        {/* Dark mode flattens the GIF to a white silhouette (incl. the bolt).
+            Overlay the original bolt — cut from the same artwork — back in red
+            so the bolt stays red in dark mode, exactly as it is in light mode. */}
+        <img
+          className="hero-bolt-overlay"
+          src="/assets/gmp-bolt-red.png"
+          alt=""
+          aria-hidden="true"
+        />
       </div>
     </div>
   );
