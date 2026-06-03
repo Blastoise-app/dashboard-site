@@ -66,6 +66,11 @@ function Centered({ children }: { children: ReactNode }) {
 }
 
 function BackLink() {
+  const { claims } = useAuth();
+  // "Back to clients" only makes sense for agency/admin, who have a client list
+  // at /agency. A client has no list to go back to, and /agency 403s them — so
+  // render nothing rather than a dead-end link.
+  if (claims?.role === "client") return null;
   return (
     <Link to="/agency" className="text-[var(--red)] underline">
       Back to clients

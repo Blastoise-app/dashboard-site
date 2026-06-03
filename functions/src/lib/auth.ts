@@ -16,7 +16,9 @@ export const AGENCY_DOMAINS: Record<string, string> = {
 // record(s) they may see. Keys are matched case-insensitively against both the
 // email's domain and the full email. Fill in as real clients onboard.
 export const CLIENT_DOMAINS: Record<string, ClientMatch[]> = {
-  // "neuraltrust.ai": [{ agencyId: "gmp", clientId: "neuraltrust" }],
+  // Phase 3 (2026-06-03): NeuralTrust live. Anyone @neuraltrust.ai → the
+  // neuraltrust dashboard under gmp, route-restricted to that slug.
+  "neuraltrust.ai": [{ agencyId: "gmp", clientId: "neuraltrust" }],
 };
 
 export function emailDomain(email: string): string {

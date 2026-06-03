@@ -25,7 +25,12 @@ export const beforeCreateUser = beforeUserCreated(async (event) => {
     );
   }
 
-  const db = adminDb();
+  // Build claims first: they're the only thing the SPA needs (it derives role +
+  // routing entirely from the token, never from /users/{uid}). The user doc is
+  // audit/bookkeeping, so write it best-effort — a transient Firestore failure
+  // must not reject an otherwise-valid sign-in and lock a legitimate user out.
+  const claims = buildClaims(access);
+
   const now = FieldValue.serverTimestamp();
   const userDoc: Record<string, unknown> = {
     uid,
@@ -37,6 +42,10 @@ export const beforeCreateUser = beforeUserCreated(async (event) => {
   if (access.role === "agency") userDoc.agencyId = access.agencyId;
   if (access.role === "client") userDoc.clientRefs = access.clientRefs;
 
-  await db.doc(`users/${uid}`).set(userDoc, { merge: true });
-  return { customClaims: buildClaims(access) };
+  try {
+    await adminDb().doc(`users/${uid}`).set(userDoc, { merge: true });
+  } catch (err) {
+    console.error(`beforeCreateUser: failed to write users/${uid} (continuing):`, err);
+  }
+  return { customClaims: claims };
 });

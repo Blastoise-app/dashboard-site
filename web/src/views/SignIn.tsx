@@ -3,7 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { auth } from "@/lib/firebase";
-import { useAuth, type Claims } from "@/auth/AuthProvider";
+import { useAuth } from "@/auth/AuthProvider";
+import { roleHome, canAccess } from "@/auth/roleHome";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -12,10 +13,15 @@ export default function SignIn() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Already signed in? Bounce to the right shell.
+  // Already signed in? Bounce to the right shell. Honor a `from` deep-link ONLY
+  // if this role can actually open it — otherwise a client bounced off /agency
+  // (or /admin) would be replayed straight back to a 403. Fall back to the
+  // role's own home in that case.
   if (user && claims?.role) {
     const dest = roleHome(claims.role, claims);
-    return <RedirectTo path={(location.state as { from?: string })?.from || dest} navigate={navigate} />;
+    const from = (location.state as { from?: string })?.from;
+    const target = from && canAccess(claims.role, from) ? from : dest;
+    return <RedirectTo path={target} navigate={navigate} />;
   }
 
   async function handleSignIn() {
@@ -81,15 +87,4 @@ function RedirectTo({ path, navigate }: { path: string; navigate: ReturnType<typ
   // Effect-free redirect via useEffect indirection isn't necessary — Router supports it.
   setTimeout(() => navigate(path, { replace: true }), 0);
   return null;
-}
-
-function roleHome(role: string, claims?: Claims): string {
-  if (role === "platform_admin") return "/admin";
-  if (role === "agency") return "/agency";
-  if (role === "client") {
-    // clientKeys look like "gmp/neuraltrust"; the second segment is the slug.
-    const clientId = claims?.clientKeys?.[0]?.split("/")[1];
-    return clientId ? `/agency/clients/${clientId}` : "/agency";
-  }
-  return "/agency";
 }
