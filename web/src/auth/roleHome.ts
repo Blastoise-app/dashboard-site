@@ -5,7 +5,11 @@ import type { Claims, Role } from "./AuthProvider";
 // by the "/" index redirect, SignIn, and any in-app "home" link so they can't
 // drift apart (the drift was a confirmed go-live lockout — see Phase 3 review).
 export function roleHome(role: Role | undefined, claims?: Claims | null): string {
-  if (role === "platform_admin") return "/admin";
+  // A platform admin's useful landing is the client list at /agency (admin can
+  // access it, with the switcher). /admin is a future stub (agencies list +
+  // add-agency form), so don't strand the admin there — they can still reach it
+  // by direct URL.
+  if (role === "platform_admin") return "/agency";
   if (role === "agency") return "/agency";
   if (role === "client") {
     // clientKeys look like "gmp/neuraltrust"; the second segment is the slug.
